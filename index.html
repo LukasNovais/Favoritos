@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos 3D</title>
+    <title>Meus Atalhos 3D Dinâmicos</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -16,6 +16,7 @@
             --background-color: #f0f2f5;
             --card-bg: #ffffff;
             --shadow-color: rgba(0, 0, 0, 0.2);
+            --delete-color: #dc3545; /* Vermelho para o botão de exclusão */
         }
 
         body {
@@ -64,7 +65,6 @@
             min-width: 200px;
         }
         
-        /* Ajuste no placeholder para guiar o usuário */
         #link-input::placeholder {
             color: #aaa;
             font-style: italic;
@@ -106,6 +106,7 @@
             background-color: var(--card-bg);
             width: 110px;
             text-align: center;
+            position: relative; /* Essencial para posicionar o botão de exclusão */
             
             /* Sombra para o Efeito 3D (Elevado) */
             box-shadow: 
@@ -113,11 +114,9 @@
                 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             
             transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
         }
 
         .link-item:hover {
-            /* Efeito "Levantar" ao passar o mouse */
             transform: translateY(-5px);
             box-shadow: 
                 0 10px 15px -3px var(--shadow-color), 
@@ -125,8 +124,9 @@
         }
 
         .link-item img {
-            width: 55px; /* Tamanho do ícone */
-            height: 55px;
+            /* Tamanho ajustado para maior definição */
+            width: 60px; 
+            height: 60px;
             object-fit: contain;
             margin-bottom: 10px;
             border-radius: 8px;
@@ -135,7 +135,42 @@
         .link-label {
             font-size: 0.9em;
             font-weight: 600;
-            word-break: break-word; /* Garante que nomes longos quebrem a linha */
+            word-break: break-word;
+        }
+        
+        /* ESTILO DO BOTÃO DE EXCLUSÃO */
+        .delete-btn {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            width: 20px;
+            height: 20px;
+            background-color: var(--delete-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            font-size: 14px;
+            line-height: 18px;
+            text-align: center;
+            cursor: pointer;
+            opacity: 0; /* Esconde o botão por padrão */
+            transition: opacity 0.2s, background-color 0.2s;
+            z-index: 10;
+            font-weight: bold;
+        }
+
+        /* Mostra o botão de exclusão ao passar o mouse sobre o atalho */
+        .link-item:hover .delete-btn {
+            opacity: 1;
+        }
+
+        .delete-btn:hover {
+            background-color: #c82333;
+        }
+
+        /* Quando o botão de exclusão está ativo (pressionado) */
+        .link-item.deleting {
+            opacity: 0.5; /* Efeito visual para indicar exclusão */
         }
     </style>
 </head>
@@ -143,7 +178,7 @@
 
     <header>
         <h1>Meus Links Rápidos</h1>
-        <p>Adicione um site e o ícone será gerado automaticamente.</p>
+        <p>Adicione, navegue e exclua seus atalhos.</p>
         
         <form id="add-link-form">
             <input type="text" id="link-input" placeholder="Ex: www.github.com" required>
@@ -176,15 +211,24 @@
         }
 
         // 3. CRIA O ELEMENTO HTML DE UM ATALHO
-        function createLinkItem(url, label) {
+        function createLinkItem(linkData, index) {
+            const { url, label } = linkData;
+            
             const link = document.createElement('a');
             link.href = url;
             link.target = "_blank";
             link.classList.add('link-item');
+            
+            // Usamos um div para o link completo para que o botão de exclusão não o ative
+            const linkContent = document.createElement('div');
+            linkContent.style.display = 'flex';
+            linkContent.style.flexDirection = 'column';
+            linkContent.style.alignItems = 'center';
+            linkContent.style.width = '100%';
 
             const img = document.createElement('img');
-            // Serviço do Google para obter o favicon de qualquer URL
-            const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(url)}`;
+            // Serviço do Google para obter o favicon. O 'sz=128' busca uma imagem de alta resolução.
+            const iconUrl = `https://www.google.com/s2/favicons?sz=128&domain_url=${encodeURIComponent(url)}`;
             
             img.src = iconUrl;
             img.alt = `Logo de ${label}`;
@@ -192,23 +236,47 @@
             const span = document.createElement('span');
             span.classList.add('link-label');
             span.textContent = label;
+            
+            // ----------------------------------------
+            // NOVO: BOTÃO DE EXCLUSÃO
+            // ----------------------------------------
+            const deleteBtn = document.createElement('button');
+            deleteBtn.textContent = 'X';
+            deleteBtn.classList.add('delete-btn');
+            deleteBtn.addEventListener('click', (e) => {
+                e.preventDefault(); // Impede que o clique abra o link
+                handleDeleteLink(index); // Chama a função de exclusão
+            });
 
+            link.appendChild(deleteBtn);
             link.appendChild(img);
             link.appendChild(span);
 
             return link;
         }
 
-        // 4. RENDERIZA (MOSTRA) TODOS OS LINKS
+        // 4. LÓGICA DE EXCLUSÃO
+        function handleDeleteLink(indexToDelete) {
+            if (confirm("Tem certeza que deseja remover este atalho?")) {
+                let currentLinks = loadLinks();
+                // Remove o item do array baseado no índice
+                currentLinks.splice(indexToDelete, 1);
+                saveLinks(currentLinks);
+                renderLinks(currentLinks); // Redesenha a lista
+            }
+        }
+
+        // 5. RENDERIZA (MOSTRA) TODOS OS LINKS
         function renderLinks(links) {
             linksContainer.innerHTML = ''; // Limpa o container
-            links.forEach(linkData => {
-                const item = createLinkItem(linkData.url, linkData.label);
+            // Passamos o índice (index) para que o botão de exclusão saiba qual item remover
+            links.forEach((linkData, index) => {
+                const item = createLinkItem(linkData, index);
                 linksContainer.appendChild(item);
             });
         }
 
-        // 5. LÓGICA DE ADICIONAR UM NOVO LINK
+        // 6. LÓGICA DE ADICIONAR UM NOVO LINK
         form.addEventListener('submit', function(event) {
             event.preventDefault();
 
@@ -219,19 +287,23 @@
             const label = labelInput.value.trim();
 
             if (url && label) {
-                // CORREÇÃO: Adiciona o https:// se não houver protocolo.
-                // Isso permite que o usuário digite apenas "www.site.com"
+                // Adiciona o https:// se não houver protocolo.
                 if (!url.startsWith('http://') && !url.startsWith('https://')) {
                     url = 'https://' + url;
                 }
 
                 // Adiciona o novo link na lista e salva
                 const currentLinks = loadLinks();
-                currentLinks.push({ url: url, label: label });
-                saveLinks(currentLinks);
+                // Verifica se o link já existe para evitar duplicatas (opcional)
+                const exists = currentLinks.some(link => link.url === url);
                 
-                // Atualiza a visualização
-                renderLinks(currentLinks);
+                if (!exists) {
+                    currentLinks.push({ url: url, label: label });
+                    saveLinks(currentLinks);
+                    renderLinks(currentLinks); // Atualiza a visualização
+                } else {
+                    alert('Este site já foi adicionado!');
+                }
 
                 // Limpa o formulário
                 urlInput.value = '';
@@ -240,7 +312,7 @@
             }
         });
 
-        // 6. INICIALIZAÇÃO: Carrega e mostra os links ao abrir a página
+        // 7. INICIALIZAÇÃO: Carrega e mostra os links ao abrir a página
         document.addEventListener('DOMContentLoaded', () => {
             renderLinks(loadLinks());
         });

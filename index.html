@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos Essenciais (Admin Centralizado)</title>
+    <title>Meus Atalhos Essenciais (Compacto)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -18,6 +18,8 @@
             --shadow-color: rgba(0, 0, 0, 0.2);
             --delete-color: #dc3545;
             --admin-color: #ffc107;
+            /* Espaçamento mínimo */
+            --spacing-unit: 10px;
         }
 
         body {
@@ -28,7 +30,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 20px 10px;
+            padding: var(--spacing-unit) 5px; /* Padding ajustado para 5px lateral */
             color: #333;
         }
 
@@ -36,14 +38,14 @@
             width: 100%;
             max-width: 900px;
             text-align: center;
-            margin-bottom: 20px;
+            margin-bottom: var(--spacing-unit); /* Espaçamento mínimo */
         }
 
         h1 {
             color: #2c3e50;
             font-weight: 700;
             margin-bottom: 5px;
-            font-size: 2em;
+            font-size: 1.8em; /* Fonte ligeiramente menor */
         }
         
         /* -------------------------------------- */
@@ -54,23 +56,24 @@
             max-width: 900px;
             display: flex;
             flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
+            gap: var(--spacing-unit);
+            margin-bottom: var(--spacing-unit);
+            padding: 0 5px; /* Garante que o container não vaze */
         }
 
         .link-form-container {
-            padding: 15px;
+            padding: var(--spacing-unit);
             border-radius: 8px;
             background-color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra mais suave */
         }
 
         .link-form-container h3 {
-            font-size: 1.1em;
+            font-size: 1em;
             margin-top: 0;
             border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
+            padding-bottom: 5px;
+            margin-bottom: var(--spacing-unit);
         }
 
         /* ADMIN LOGIN */
@@ -78,16 +81,16 @@
             display: flex;
             align-items: center;
             justify-content: flex-end;
-            gap: 10px;
-            padding-bottom: 10px;
+            gap: 8px;
+            padding-bottom: 5px;
         }
 
         #admin-auth-box input[type="password"] {
             display: none;
-            padding: 8px 12px;
+            padding: 6px 10px; /* Input menor */
             border: 1px solid #ccc;
             border-radius: 4px;
-            width: 120px;
+            width: 100px;
         }
 
         #admin-auth-box.active input, #admin-auth-box.active #admin-auth-btn {
@@ -98,31 +101,33 @@
             background-color: var(--admin-color);
             color: #333;
             border: none;
-            padding: 8px 12px;
-            border-radius: 6px;
+            padding: 6px 10px; /* Botão menor */
+            border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
+            font-size: 0.9em;
             transition: background-color 0.3s;
         }
 
         #admin-status {
             font-weight: 600;
             color: var(--admin-color);
-            margin-left: 10px;
+            margin-left: 5px;
+            font-size: 0.9em;
         }
         
         /* Formulários de Adição */
         .link-form {
             display: grid;
             grid-template-columns: 1fr 1fr auto auto;
-            gap: 10px;
+            gap: 5px; /* Espaçamento entre inputs reduzido */
         }
 
         .link-form input, .link-form button, .link-form select {
-            padding: 10px 12px;
+            padding: 8px 10px; /* Padding de input reduzido */
             border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 15px;
+            border-radius: 4px;
+            font-size: 14px;
         }
         
         #admin-form-container {
@@ -134,107 +139,100 @@
             display: block;
         }
         
-        @media (max-width: 650px) {
+        /* Quebra rápida do formulário em telas pequenas */
+        @media (max-width: 500px) {
             .link-form {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr; /* Coluna única no celular */
+                gap: 5px;
             }
             .link-form button {
-                grid-column: span 2;
+                grid-column: span 1;
             }
         }
-        
+
         /* -------------------------------------- */
         /* ESTILO DOS LINKS E BOTÕES DE EXCLUSÃO */
         /* -------------------------------------- */
         #tab-container {
             width: 100%;
             max-width: 900px;
-            margin-top: 20px;
+            margin-top: 10px;
         }
 
         #tabs {
             display: flex;
             justify-content: center;
-            border-bottom: 2px solid #ccc;
-            margin-bottom: 30px;
+            border-bottom: 1px solid #ccc; /* Linha mais fina */
+            margin-bottom: 15px;
             flex-wrap: wrap;
         }
 
         .tab-button {
-            padding: 10px 20px;
+            padding: 8px 12px;
             cursor: pointer;
-            border: none;
-            background-color: transparent;
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #555;
-            transition: color 0.3s, border-bottom 0.3s;
-            margin: 0 5px;
+            font-size: 1em;
+            margin: 0 2px; /* Margem reduzida */
         }
 
         .tab-button.active {
-            color: var(--primary-color);
-            border-bottom: 3px solid var(--primary-color);
+            border-bottom-width: 2px;
         }
         
         #links-container {
             display: flex;
             flex-wrap: wrap;
-            justify-content: center;
-            gap: 25px;
+            justify-center: center;
+            gap: 15px; /* Espaçamento entre ícones reduzido (Compacto) */
             max-width: 900px;
             width: 100%;
+            padding: 0 5px; /* Garante que o container não vaze */
         }
         
         .link-item {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-            padding: 20px 15px;
-            border-radius: 15px;
-            background-color: var(--card-bg);
-            width: 110px;
-            text-align: center;
-            position: relative;
-            box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            width: 90px; /* Largura do ícone reduzida */
+            padding: 10px; /* Padding reduzido */
+            border-radius: 10px;
+            box-shadow: 0 2px 4px -1px var(--shadow-color), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
         }
 
         .link-item img {
-            width: 60px;
-            height: 60px;
-            object-fit: contain;
-            margin-bottom: 10px;
-            border-radius: 8px;
-            filter: saturate(1.1);
+            width: 50px; /* Tamanho do ícone reduzido */
+            height: 50px;
+            margin-bottom: 5px; /* Margem reduzida */
+            border-radius: 6px;
         }
         
+        .link-item .link-label {
+            font-size: 0.75em; /* Fonte do nome do link menor */
+            word-break: break-word;
+            line-height: 1.2;
+            height: 2.4em; /* Limita a duas linhas */
+            overflow: hidden;
+        }
+
         .delete-btn {
-            position: absolute;
-            top: 5px;
-            right: 5px;
-            width: 20px;
-            height: 20px;
-            background-color: var(--delete-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            font-size: 14px;
-            line-height: 18px;
-            text-align: center;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s, background-color 0.2s;
-            z-index: 10;
-            font-weight: bold;
+            top: 3px;
+            right: 3px;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            line-height: 16px;
         }
 
         .link-item:hover .delete-btn { opacity: 1; }
-        /* A EXCLUSÃO SÓ APARECE EM LINKS DO ADMIN SE O ADMIN ESTIVER LOGADO */
         .link-item[data-type="admin"] .delete-btn { display: none; }
         body.admin-mode .link-item[data-type="admin"] .delete-btn { display: block; }
+
+        /* Garante que o layout não vaze em NENHUM celular */
+        @media (max-width: 320px) {
+             #links-container {
+                 justify-content: space-around;
+             }
+             .link-item {
+                 width: 80px; /* Largura mínima */
+                 padding: 8px;
+             }
+        }
     </style>
 </head>
 <body class="admin-mode-disabled">
@@ -269,12 +267,10 @@
     
     <script>
         // --- CHAVES PARA ARMAZENAMENTO LOCAL ---
-        const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; // Links fixos para todos
-        // REMOVEMOS A CHAVE DE USUÁRIO
-        const ADMIN_PASSWORD = 'prime.admin'; // Senha definida
-        
-        // REMOVEMOS A CATEGORIA 'MEUS LINKS'
-        const CATEGORIES = ['Ferramentas', 'Redes Sociais']; 
+        const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; 
+        const ADMIN_PASSWORD = 'prime.admin'; 
+        const CATEGORIES = ['Ferramentas', 'Redes Sociais']; // Categorias visíveis
+        // ... (resto do JS, mantido da resposta anterior) ...
 
         // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-container');
@@ -294,7 +290,6 @@
         // 1. FUNÇÕES DE ACESSO AO LOCALSTORAGE
         // ----------------------------------------
         
-        // Carrega links do Admin (Padrão) - É O ÚNICO TIPO DE LINK AGORA
         function loadAdminLinks() {
             const storedLinks = localStorage.getItem(ADMIN_LINKS_KEY);
             return storedLinks ? JSON.parse(storedLinks) : [
@@ -304,9 +299,6 @@
             ];
         }
 
-        // Não existe mais loadUserLinks()
-
-        // Salva links do Admin (Fixo)
         function saveAdminLinks(links) {
             localStorage.setItem(ADMIN_LINKS_KEY, JSON.stringify(links));
         }
@@ -316,7 +308,6 @@
         // ----------------------------------------
 
         function updateAdminMode(status) {
-            // ... (Lógica de Admin Mode, mantida) ...
             isAdmin = status;
             document.body.classList.toggle('admin-mode', status); 
             adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
@@ -341,6 +332,7 @@
             link.setAttribute('data-type', type);
             
             const img = document.createElement('img');
+            // Ícones de alta resolução da web
             const iconUrl = `https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(url)}`;
             
             img.src = iconUrl;
@@ -357,7 +349,6 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                // Agora, todos os links são do tipo 'admin', então o isAdmin é obrigatório
                 if (!isAdmin) {
                     alert('Apenas o Administrador pode excluir links padrão.');
                     return;
@@ -382,16 +373,12 @@
             renderLinks(activeCategory);
         }
         
-        // Função de exclusão de usuário foi removida.
-
         function renderLinks(category) {
             activeCategory = category;
             linksContainer.innerHTML = '';
             
-            // Carrega SOMENTE links do Admin (fixos)
             const adminLinks = loadAdminLinks().filter(link => link.category === category);
 
-            // Renderiza links do Admin (fixos)
             adminLinks.forEach((linkData, index) => {
                 const item = createLinkItem(linkData, index);
                 linksContainer.appendChild(item);
@@ -401,7 +388,6 @@
                  linksContainer.innerHTML = `<p style="width: 100%; text-align: center; color: #777;">Nenhum atalho encontrado na categoria "${category}".</p>`;
             }
 
-            // Atualiza botões das abas
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.toggle('active', btn.textContent === category);
             });
@@ -413,7 +399,6 @@
             tabsContainer.innerHTML = '';
             adminSelect.innerHTML = '';
             
-            // SOMENTE CATEGORIAS FIXAS
             CATEGORIES.forEach(category => {
                 const tabBtn = document.createElement('button');
                 tabBtn.textContent = category;
@@ -434,7 +419,6 @@
         function handleAddLink(event) {
             event.preventDefault();
             
-            // Apenas o Admin pode adicionar links fixos
             if (!isAdmin) return;
 
             const form = event.target;
@@ -457,10 +441,9 @@
             }
         }
         
-        // Remove listener de usuário
         adminAddForm.addEventListener('submit', handleAddLink);
 
-        // --- Lógica de Login Admin (mantida) ---
+        // --- Lógica de Login Admin ---
         adminLoginBtn.addEventListener('click', () => {
             if (isAdmin) {
                 updateAdminMode(false);

@@ -3,16 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos Essenciais (Sincronizado)</title>
+    <title>Meus Atalhos Essenciais (Admin Centralizado)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-    
     <style>
-        /* ... (Mantenha todo o seu CSS anterior aqui) ... */
-        /* Para manter o código compacto, imagine que todo o CSS da resposta anterior está aqui */
+        /* -------------------------------------- */
+        /* CSS: ESTILO GERAL E LAYOUT COMPACTO */
+        /* -------------------------------------- */
         :root {
             --primary-color: #007bff;
             --background-color: #f0f2f5;
@@ -48,6 +46,34 @@
             font-size: 2em;
         }
         
+        /* -------------------------------------- */
+        /* LAYOUT DOS FORMULÁRIOS (Compacto) */
+        /* -------------------------------------- */
+        #top-controls {
+            width: 100%;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .link-form-container {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .link-form-container h3 {
+            font-size: 1.1em;
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
+        }
+
+        /* ADMIN LOGIN */
         #admin-auth-box {
             display: flex;
             align-items: center;
@@ -85,30 +111,7 @@
             margin-left: 10px;
         }
         
-        #top-controls {
-            width: 100%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-            margin-bottom: 25px;
-        }
-
-        .link-form-container {
-            padding: 15px;
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-        }
-
-        .link-form-container h3 {
-            font-size: 1.1em;
-            margin-top: 0;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 8px;
-            margin-bottom: 15px;
-        }
-        
+        /* Formulários de Adição */
         .link-form {
             display: grid;
             grid-template-columns: 1fr 1fr auto auto;
@@ -140,6 +143,9 @@
             }
         }
         
+        /* -------------------------------------- */
+        /* ESTILO DOS LINKS E BOTÕES DE EXCLUSÃO */
+        /* -------------------------------------- */
         #tab-container {
             width: 100%;
             max-width: 900px;
@@ -226,6 +232,7 @@
         }
 
         .link-item:hover .delete-btn { opacity: 1; }
+        /* A EXCLUSÃO SÓ APARECE EM LINKS DO ADMIN SE O ADMIN ESTIVER LOGADO */
         .link-item[data-type="admin"] .delete-btn { display: none; }
         body.admin-mode .link-item[data-type="admin"] .delete-btn { display: block; }
     </style>
@@ -244,16 +251,6 @@
     </header>
 
     <div id="top-controls">
-        <div id="user-form-container" class="link-form-container">
-            <h3>Adicionar Meu Link Pessoal</h3>
-            <form id="user-add-link-form" class="link-form">
-                <input type="text" id="user-link-input" placeholder="URL: www.meusite.com" required>
-                <input type="text" id="user-label-input" placeholder="Nome do Atalho" required>
-                <select id="user-category-select" required></select>
-                <button type="submit">Adicionar Meu Link</button>
-            </form>
-        </div>
-
         <div id="admin-form-container" class="link-form-container">
             <h3>Gerenciar Links Padrão (Fixos)</h3>
             <form id="admin-add-link-form" class="link-form">
@@ -271,116 +268,47 @@
     </div>
     
     <script>
-        // --- SEUS DADOS DO FIREBASE - COLE AQUI! ---
-        const firebaseConfig = {
-          // *** COLOQUE O SEU OBJETO firebaseConfig AQUI ***
-          // Exemplo (DELETE ESTE EXEMPLO E USE O SEU):
-          apiKey: "AIzaSyANcs2Q34onCusD-dafQ9poyCq4d0Uw7D8",
-          authDomain: "favoritos-72a51.firebaseapp.com",
-          projectId: "favoritos-72a51",
-          storageBucket: "favoritos-72a51.firebasestorage.app",
-          messagingSenderId: "1082478946641",
-          appId: "1:1082478946641:web:055db372fc3bbf7352cb70"
-        };
-        // ---------------------------------------------
+        // --- CHAVES PARA ARMAZENAMENTO LOCAL ---
+        const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; // Links fixos para todos
+        // REMOVEMOS A CHAVE DE USUÁRIO
+        const ADMIN_PASSWORD = 'prime.admin'; // Senha definida
         
-        // Inicializa o Firebase e o Firestore
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const db = firebase.firestore();
+        // REMOVEMOS A CATEGORIA 'MEUS LINKS'
+        const CATEGORIES = ['Ferramentas', 'Redes Sociais']; 
 
-        // ----------------------------------------
-        // DEFINIÇÕES E VARIÁVEIS GLOBAIS
-        // ----------------------------------------
+        // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-container');
+        const tabsContainer = document.getElementById('tabs');
+        const adminFormContainer = document.getElementById('admin-form-container');
         const adminAddForm = document.getElementById('admin-add-link-form');
-        const userAddForm = document.getElementById('user-add-link-form');
-        const ADMIN_PASSWORD = 'prime.admin';
-        const CATEGORIES = ['Ferramentas', 'Redes Sociais', 'Meus Links'];
+        const adminLoginBtn = document.getElementById('admin-login-btn');
+        const adminAuthBtn = document.getElementById('admin-auth-btn');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const adminAuthBox = document.getElementById('admin-auth-box');
+        const adminStatus = document.getElementById('admin-status');
         
         let activeCategory = '';
         let isAdmin = false;
 
-        // Gera um ID de usuário único e persistente no navegador (simula o login)
-        const getUserId = () => {
-            let userId = localStorage.getItem('user_sync_id');
-            if (!userId) {
-                userId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-                localStorage.setItem('user_sync_id', userId);
-            }
-            return userId;
-        };
-        const USER_ID = getUserId();
-        
         // ----------------------------------------
-        // 1. FUNÇÕES DE ACESSO AO FIREBASE (Async)
+        // 1. FUNÇÕES DE ACESSO AO LOCALSTORAGE
         // ----------------------------------------
         
-        // Carrega links do Admin (padrão para todos)
-        async function loadAdminLinks() {
-            try {
-                const snapshot = await db.collection('adminLinks').orderBy('label').get();
-                return snapshot.docs.map(doc => ({ 
-                    id: doc.id, // ID do Firestore
-                    type: 'admin',
-                    ...doc.data() 
-                }));
-            } catch (error) {
-                console.error("Erro ao carregar links do Admin:", error);
-                return [];
-            }
+        // Carrega links do Admin (Padrão) - É O ÚNICO TIPO DE LINK AGORA
+        function loadAdminLinks() {
+            const storedLinks = localStorage.getItem(ADMIN_LINKS_KEY);
+            return storedLinks ? JSON.parse(storedLinks) : [
+                { url: 'https://www.google.com', label: 'Google', category: 'Ferramentas', type: 'admin' },
+                { url: 'https://github.com', label: 'GitHub', category: 'Ferramentas', type: 'admin' },
+                { url: 'https://www.instagram.com', label: 'Instagram', category: 'Redes Sociais', type: 'admin' },
+            ];
         }
 
-        // Carrega links Pessoais (sincronizados pelo USER_ID)
-        async function loadUserLinks() {
-            try {
-                const snapshot = await db.collection('userLinks')
-                    .where('userId', '==', USER_ID)
-                    .orderBy('label')
-                    .get();
-                return snapshot.docs.map(doc => ({ 
-                    id: doc.id, 
-                    type: 'user',
-                    ...doc.data() 
-                }));
-            } catch (error) {
-                console.error("Erro ao carregar links do Usuário:", error);
-                return [];
-            }
-        }
+        // Não existe mais loadUserLinks()
 
-        // Salva um NOVO link (Admin ou Usuário)
-        async function saveLink(linkData) {
-            const collectionName = linkData.type === 'admin' ? 'adminLinks' : 'userLinks';
-            if (linkData.type === 'user') {
-                linkData.userId = USER_ID; // Adiciona o ID do usuário para sincronização
-            }
-            try {
-                // Remove o campo 'id' antes de salvar no Firestore
-                const { id, ...dataToSave } = linkData;
-                await db.collection(collectionName).add(dataToSave);
-                await renderLinks(activeCategory);
-                return true;
-            } catch (error) {
-                console.error("Erro ao salvar link:", error);
-                alert("Erro ao salvar link. Verifique as Regras de Segurança do seu Firestore.");
-                return false;
-            }
-        }
-
-        // Exclui um link (Admin ou Usuário)
-        async function deleteLink(linkData) {
-            const collectionName = linkData.type === 'admin' ? 'adminLinks' : 'userLinks';
-            try {
-                await db.collection(collectionName).doc(linkData.id).delete();
-                await renderLinks(activeCategory);
-                return true;
-            } catch (error) {
-                console.error("Erro ao excluir link:", error);
-                alert("Erro ao excluir link. Verifique as permissões.");
-                return false;
-            }
+        // Salva links do Admin (Fixo)
+        function saveAdminLinks(links) {
+            localStorage.setItem(ADMIN_LINKS_KEY, JSON.stringify(links));
         }
 
         // ----------------------------------------
@@ -388,22 +316,22 @@
         // ----------------------------------------
 
         function updateAdminMode(status) {
-            // ... (Lógica de Admin Mode, mantida da resposta anterior) ...
+            // ... (Lógica de Admin Mode, mantida) ...
             isAdmin = status;
             document.body.classList.toggle('admin-mode', status); 
-            document.getElementById('admin-login-btn').textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
-            document.getElementById('admin-status').textContent = status ? 'ADMIN' : '';
-            document.getElementById('admin-form-container').classList.toggle('active', status);
+            adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
+            adminStatus.textContent = status ? 'ADMIN' : '';
+            adminFormContainer.classList.toggle('active', status);
 
-            document.getElementById('admin-auth-box').classList.remove('active');
-            document.getElementById('admin-password-input').style.display = 'none';
-            document.getElementById('admin-auth-btn').style.display = 'none';
-            document.getElementById('admin-password-input').value = '';
+            adminAuthBox.classList.remove('active');
+            adminPasswordInput.style.display = 'none';
+            adminAuthBtn.style.display = 'none';
+            adminPasswordInput.value = '';
 
             renderLinks(activeCategory);
         }
         
-        function createLinkItem(linkData) {
+        function createLinkItem(linkData, index) {
             const { url, label, type } = linkData;
             
             const link = document.createElement('a');
@@ -429,13 +357,14 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
-                if (type === 'admin' && !isAdmin) {
+                // Agora, todos os links são do tipo 'admin', então o isAdmin é obrigatório
+                if (!isAdmin) {
                     alert('Apenas o Administrador pode excluir links padrão.');
                     return;
                 }
                 
-                if (confirm(`Remover o link "${label}"?`)) {
-                    deleteLink(linkData); // Chama a função de exclusão do Firebase
+                if (confirm(`Remover o link fixo "${label}"?`)) {
+                    handleDeleteAdminLink(index);
                 }
             });
 
@@ -446,42 +375,45 @@
             return link;
         }
 
-        async function renderLinks(category) {
+        function handleDeleteAdminLink(indexToDelete) {
+            let links = loadAdminLinks();
+            links.splice(indexToDelete, 1);
+            saveAdminLinks(links);
+            renderLinks(activeCategory);
+        }
+        
+        // Função de exclusão de usuário foi removida.
+
+        function renderLinks(category) {
             activeCategory = category;
-            linksContainer.innerHTML = 'Carregando...';
-
-            const [adminLinks, userLinks] = await Promise.all([
-                loadAdminLinks(),
-                loadUserLinks()
-            ]);
-            
             linksContainer.innerHTML = '';
-
-            const allLinks = [...adminLinks, ...userLinks].filter(link => link.category === category);
             
-            if (allLinks.length === 0) {
-                 linksContainer.innerHTML = `<p style="width: 100%; text-align: center; color: #777;">Nenhum atalho encontrado na categoria "${category}".</p>`;
-            }
+            // Carrega SOMENTE links do Admin (fixos)
+            const adminLinks = loadAdminLinks().filter(link => link.category === category);
 
-            allLinks.forEach((linkData) => {
-                const item = createLinkItem(linkData);
+            // Renderiza links do Admin (fixos)
+            adminLinks.forEach((linkData, index) => {
+                const item = createLinkItem(linkData, index);
                 linksContainer.appendChild(item);
             });
             
+            if (adminLinks.length === 0) {
+                 linksContainer.innerHTML = `<p style="width: 100%; text-align: center; color: #777;">Nenhum atalho encontrado na categoria "${category}".</p>`;
+            }
+
+            // Atualiza botões das abas
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.toggle('active', btn.textContent === category);
             });
         }
         
         function initializeCategories() {
-            // ... (Lógica de inicialização de categorias, mantida) ...
             const adminSelect = document.getElementById('admin-category-select');
-            const userSelect = document.getElementById('user-category-select');
-
+            
             tabsContainer.innerHTML = '';
             adminSelect.innerHTML = '';
-            userSelect.innerHTML = '';
-
+            
+            // SOMENTE CATEGORIAS FIXAS
             CATEGORIES.forEach(category => {
                 const tabBtn = document.createElement('button');
                 tabBtn.textContent = category;
@@ -490,7 +422,6 @@
                 tabsContainer.appendChild(tabBtn);
                 
                 adminSelect.insertAdjacentHTML('beforeend', `<option value="${category}">${category}</option>`);
-                userSelect.insertAdjacentHTML('beforeend', `<option value="${category}">${category}</option>`);
             });
             
             activeCategory = CATEGORIES[0];
@@ -500,14 +431,13 @@
         // 3. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
         // ----------------------------------------
 
-        function handleAddLink(formType, event) {
+        function handleAddLink(event) {
             event.preventDefault();
             
-            const isUser = formType === 'user';
+            // Apenas o Admin pode adicionar links fixos
+            if (!isAdmin) return;
+
             const form = event.target;
-
-            if (!isUser && !isAdmin) return;
-
             const url = form.querySelector('input[placeholder^="URL"]').value.trim();
             const label = form.querySelector('input[placeholder^="Nome"]').value.trim();
             const categorySelected = form.querySelector('select').value;
@@ -515,51 +445,47 @@
             if (url && label && categorySelected) {
                 let finalUrl = (url.startsWith('http') ? url : 'https://' + url);
                 
-                // Novo objeto de link sem a necessidade de verificar duplicatas localmente (Firestore lida com isso)
-                const newLink = { 
-                    url: finalUrl, 
-                    label: label, 
-                    category: categorySelected, 
-                    type: formType 
-                };
-                
-                saveLink(newLink).then(success => {
-                    if (success) {
-                        form.reset();
-                    }
-                });
+                let links = loadAdminLinks();
+                if (!links.some(link => link.url === finalUrl)) {
+                    links.push({ url: finalUrl, label: label, category: categorySelected, type: 'admin' });
+                    saveAdminLinks(links);
+                    renderLinks(categorySelected);
+                    form.reset();
+                } else {
+                    alert('Link fixo já existe!');
+                }
             }
         }
         
-        userAddForm.addEventListener('submit', (e) => handleAddLink('user', e));
-        adminAddForm.addEventListener('submit', (e) => handleAddLink('admin', e));
+        // Remove listener de usuário
+        adminAddForm.addEventListener('submit', handleAddLink);
 
         // --- Lógica de Login Admin (mantida) ---
-        document.getElementById('admin-login-btn').addEventListener('click', () => {
+        adminLoginBtn.addEventListener('click', () => {
             if (isAdmin) {
                 updateAdminMode(false);
             } else {
-                document.getElementById('admin-auth-box').classList.add('active');
-                document.getElementById('admin-password-input').style.display = 'block';
-                document.getElementById('admin-auth-btn').style.display = 'block';
-                document.getElementById('admin-password-input').focus();
+                adminAuthBox.classList.add('active');
+                adminPasswordInput.style.display = 'block';
+                adminAuthBtn.style.display = 'block';
+                adminPasswordInput.focus();
             }
         });
 
-        document.getElementById('admin-auth-btn').addEventListener('click', () => {
-            const password = document.getElementById('admin-password-input').value;
+        adminAuthBtn.addEventListener('click', () => {
+            const password = adminPasswordInput.value;
             if (password === ADMIN_PASSWORD) {
                 updateAdminMode(true);
             } else {
                 alert("Senha incorreta!");
-                document.getElementById('admin-password-input').value = '';
-                document.getElementById('admin-password-input').focus();
+                adminPasswordInput.value = '';
+                adminPasswordInput.focus();
             }
         });
         
-        document.getElementById('admin-password-input').addEventListener('keypress', (e) => {
+        adminPasswordInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
-                document.getElementById('admin-auth-btn').click();
+                adminAuthBtn.click();
             }
         });
 

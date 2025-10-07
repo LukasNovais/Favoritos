@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos Essenciais (Somente Texto)</title>
+    <title>Meus Atalhos Essenciais (Arrastar)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -177,29 +177,29 @@
         }
         
         #links-container {
-            display: grid; /* Mudança para grid para alinhamento horizontal */
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 2 ou mais links por linha */
-            gap: 10px; /* Espaçamento entre links reduzido */
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
             max-width: 900px;
             width: 100%;
             padding: 0 5px;
         }
         
         .link-item {
-            /* Estilo para parecer um botão simples e compacto */
             display: flex;
             justify-content: space-between;
             align-items: center;
             text-decoration: none;
             color: #333;
-            padding: 8px 12px; /* Padding ajustado */
+            padding: 8px 12px;
             border-radius: 6px;
             background-color: var(--card-bg);
             text-align: left;
             position: relative;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            transition: background-color 0.2s;
-            overflow: hidden; /* Garante que o texto não vaze */
+            transition: background-color 0.2s, transform 0.2s;
+            cursor: pointer; /* Indica que é clicável/arrastável */
+            overflow: hidden;
         }
         
         .link-item:hover {
@@ -211,13 +211,31 @@
             font-weight: 500;
             white-space: nowrap;
             overflow: hidden;
-            text-overflow: ellipsis; /* Adiciona '...' se o texto for muito longo */
+            text-overflow: ellipsis;
             flex-grow: 1;
-            padding-right: 5px; /* Espaçamento antes do botão de exclusão */
+            padding-right: 5px;
         }
+        
+        /* -------------------------------------- */
+        /* ESTILOS DE DRAG AND DROP */
+        /* -------------------------------------- */
+        .link-item.dragging {
+            opacity: 0.3; /* Item sendo arrastado fica semi-transparente */
+            transform: scale(0.98);
+        }
+        
+        .link-item.drop-target-above {
+            border-top: 2px solid var(--primary-color);
+            padding-top: 6px; /* Ajusta o padding para compensar a borda */
+        }
+        
+        .link-item.drop-target-below {
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 6px; /* Ajusta o padding para compensar a borda */
+        }
+        /* Fim dos estilos de Drag and Drop */
 
         .delete-btn {
-            /* Botão de exclusão ao lado direito do texto */
             position: static;
             flex-shrink: 0;
             margin-left: 5px;
@@ -236,12 +254,20 @@
 
         .link-item:hover .delete-btn { opacity: 1; }
         .link-item[data-type="admin"] .delete-btn { display: none; }
-        body.admin-mode .link-item[data-type="admin"] .delete-btn { opacity: 1; display: block; }
+        
+        /* No modo Admin, o botão de exclusão sempre aparece (ou fica visível ao passar o mouse) e o item é arrastável */
+        body.admin-mode .link-item {
+            cursor: grab; /* Indica que o item pode ser arrastado */
+        }
+        body.admin-mode .link-item[data-type="admin"] .delete-btn { 
+            opacity: 1; 
+            display: block; 
+        }
 
         /* Ajustes para mobile */
         @media (max-width: 480px) {
             #links-container {
-                grid-template-columns: 1fr; /* Links em coluna única em celulares pequenos */
+                grid-template-columns: 1fr;
             }
             .link-item {
                 padding: 10px 12px;
@@ -283,7 +309,7 @@
         // --- CHAVES PARA ARMAZENAMENTO LOCAL ---
         const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; 
         const ADMIN_PASSWORD = 'prime.admin'; 
-        const CATEGORIES = ['Ferramentas', 'Redes Sociais']; // Categorias visíveis
+        const CATEGORIES = ['Ferramentas', 'Redes Sociais']; 
 
         // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-container');
@@ -298,6 +324,7 @@
         
         let activeCategory = '';
         let isAdmin = false;
+        let draggedItem = null; // Item que está sendo arrastado
 
         // ----------------------------------------
         // 1. FUNÇÕES DE ACESSO AO LOCALSTORAGE
@@ -317,7 +344,96 @@
         }
 
         // ----------------------------------------
-        // 2. LÓGICA DE EXIBIÇÃO E GERENCIAMENTO
+        // 2. LÓGICA DE DRAG AND DROP
+        // ----------------------------------------
+
+        function handleDragStart(e) {
+            if (!isAdmin) {
+                e.preventDefault();
+                return;
+            }
+            draggedItem = e.target;
+            e.dataTransfer.effectAllowed = 'move';
+            e.dataTransfer.setData('text/plain', e.target.dataset.index);
+            setTimeout(() => {
+                e.target.classList.add('dragging');
+            }, 0);
+        }
+
+        function handleDragEnd(e) {
+            e.target.classList.remove('dragging');
+            linksContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
+                el.classList.remove('drop-target-above', 'drop-target-below');
+            });
+            draggedItem = null;
+        }
+
+        function handleDragOver(e) {
+            if (!isAdmin) return;
+            e.preventDefault();
+            
+            const target = e.target.closest('.link-item');
+            if (!target || target === draggedItem) return;
+
+            // Remove classes de highlight de todos os itens
+            linksContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
+                el.classList.remove('drop-target-above', 'drop-target-below');
+            });
+            
+            // Calcula se o mouse está na metade superior ou inferior do item
+            const rect = target.getBoundingClientRect();
+            const midpoint = rect.y + rect.height / 2;
+
+            if (e.clientY < midpoint) {
+                target.classList.add('drop-target-above');
+            } else {
+                target.classList.add('drop-target-below');
+            }
+        }
+
+        function handleDrop(e) {
+            if (!isAdmin) return;
+            e.preventDefault();
+            
+            const target = e.target.closest('.link-item');
+            if (!target || target === draggedItem) return;
+
+            const draggedIndex = parseInt(draggedItem.dataset.index);
+            let targetIndex = parseInt(target.dataset.index);
+            
+            let links = loadAdminLinks();
+            
+            // Filtra apenas os links da categoria ativa (o que está sendo visualizado)
+            const activeLinks = links.filter(link => link.category === activeCategory);
+            
+            // Encontra os índices reais no array principal
+            const originalDraggedIndex = links.findIndex(link => link.url === activeLinks[draggedIndex].url);
+            const originalTargetIndex = links.findIndex(link => link.url === activeLinks[targetIndex].url);
+
+            if (originalDraggedIndex === -1 || originalTargetIndex === -1) return;
+
+            const [movedLink] = links.splice(originalDraggedIndex, 1);
+            
+            // Ajusta o índice de destino se o item for solto ACIMA de outro item.
+            let dropPosition = originalTargetIndex;
+            if (target.classList.contains('drop-target-below')) {
+                dropPosition = originalTargetIndex + 1;
+            }
+
+            // Garante que o índice não vá além do final
+            if (dropPosition > links.length) {
+                links.push(movedLink);
+            } else {
+                links.splice(dropPosition, 0, movedLink);
+            }
+
+            saveAdminLinks(links);
+            renderLinks(activeCategory);
+        }
+
+
+        // ----------------------------------------
+        // 3. LÓGICA DE EXIBIÇÃO E GERENCIAMENTO
         // ----------------------------------------
 
         function updateAdminMode(status) {
@@ -343,8 +459,18 @@
             link.target = "_blank";
             link.classList.add('link-item');
             link.setAttribute('data-type', type);
+            link.setAttribute('data-index', index); // Adiciona o índice para Drag/Drop
             
-            // ÍCONE REMOVIDO AQUI
+            if (isAdmin) {
+                link.setAttribute('draggable', 'true');
+                link.addEventListener('dragstart', handleDragStart);
+                link.addEventListener('dragend', handleDragEnd);
+                link.addEventListener('dragover', handleDragOver);
+                link.addEventListener('dragleave', (e) => {
+                    e.target.closest('.link-item').classList.remove('drop-target-above', 'drop-target-below');
+                });
+                link.addEventListener('drop', handleDrop);
+            }
             
             const span = document.createElement('span');
             span.classList.add('link-label');
@@ -367,15 +493,25 @@
                 }
             });
 
-            link.appendChild(span); // Texto
-            link.appendChild(deleteBtn); // Botão X
+            link.appendChild(span);
+            link.appendChild(deleteBtn);
 
             return link;
         }
 
         function handleDeleteAdminLink(indexToDelete) {
             let links = loadAdminLinks();
-            links.splice(indexToDelete, 1);
+            
+            // O indexToDelete é o índice na categoria ATUAL, não no array principal.
+            const activeLinks = links.filter(link => link.category === activeCategory);
+            const linkToDelete = activeLinks[indexToDelete];
+            
+            // Encontra e remove o link no array principal
+            const indexToRemove = links.findIndex(link => link.url === linkToDelete.url && link.category === linkToDelete.category);
+            if (indexToRemove > -1) {
+                links.splice(indexToRemove, 1);
+            }
+
             saveAdminLinks(links);
             renderLinks(activeCategory);
         }
@@ -384,7 +520,10 @@
             activeCategory = category;
             linksContainer.innerHTML = '';
             
-            const adminLinks = loadAdminLinks().filter(link => link.category === category);
+            const allLinks = loadAdminLinks();
+            
+            // Cria um novo array temporário para renderização, apenas com links da categoria ativa
+            const adminLinks = allLinks.filter(link => link.category === category);
 
             adminLinks.forEach((linkData, index) => {
                 const item = createLinkItem(linkData, index);
@@ -420,7 +559,7 @@
         }
 
         // ----------------------------------------
-        // 3. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
+        // 4. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
         // ----------------------------------------
 
         function handleAddLink(event) {

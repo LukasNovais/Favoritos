@@ -63,6 +63,12 @@
             flex-grow: 1;
             min-width: 200px;
         }
+        
+        /* Ajuste no placeholder para guiar o usuário */
+        #link-input::placeholder {
+            color: #aaa;
+            font-style: italic;
+        }
 
         #add-link-form button {
             background-color: var(--primary-color);
@@ -111,7 +117,7 @@
         }
 
         .link-item:hover {
-            /* Efeito "Apertar" ou "Levantar" */
+            /* Efeito "Levantar" ao passar o mouse */
             transform: translateY(-5px);
             box-shadow: 
                 0 10px 15px -3px var(--shadow-color), 
@@ -140,7 +146,7 @@
         <p>Adicione um site e o ícone será gerado automaticamente.</p>
         
         <form id="add-link-form">
-            <input type="url" id="link-input" placeholder="URL do site (ex: https://google.com)" required>
+            <input type="text" id="link-input" placeholder="Ex: www.github.com" required>
             <input type="text" id="label-input" placeholder="Nome do Atalho" required>
             <button type="submit">Adicionar Atalho</button>
         </form>
@@ -157,7 +163,7 @@
         function loadLinks() {
             const storedLinks = localStorage.getItem(STORAGE_KEY);
             return storedLinks ? JSON.parse(storedLinks) : [
-                // Links Padrão (aparecem se o usuário não tiver adicionado nenhum)
+                // Links Padrão
                 { url: 'https://www.google.com', label: 'Google' },
                 { url: 'https://github.com', label: 'GitHub' },
                 { url: 'https://mail.google.com', label: 'Gmail' }
@@ -209,10 +215,16 @@
             const urlInput = document.getElementById('link-input');
             const labelInput = document.getElementById('label-input');
 
-            const url = urlInput.value.trim();
+            let url = urlInput.value.trim();
             const label = labelInput.value.trim();
 
             if (url && label) {
+                // CORREÇÃO: Adiciona o https:// se não houver protocolo.
+                // Isso permite que o usuário digite apenas "www.site.com"
+                if (!url.startsWith('http://') && !url.startsWith('https://')) {
+                    url = 'https://' + url;
+                }
+
                 // Adiciona o novo link na lista e salva
                 const currentLinks = loadLinks();
                 currentLinks.push({ url: url, label: label });

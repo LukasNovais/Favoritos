@@ -1,165 +1,238 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Painel de Links | Acesso Rápido</title>
+    <title>Meus Atalhos 3D</title>
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
+        /* -------------------------------------- */
+        /* CSS: ESTILO E VISUAL "3D" */
+        /* -------------------------------------- */
         :root {
-            --primary-color: #007bff; /* Azul */
-            --background-color: #f4f7f9; 
-            --card-background: #ffffff; 
-            --text-color: #333;
-            --icon-color: #3498db; /* Cor para os ícones */
-            --border-radius: 12px;
+            --primary-color: #007bff;
+            --background-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --shadow-color: rgba(0, 0, 0, 0.2);
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Poppins', sans-serif;
             background-color: var(--background-color);
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .dashboard-container {
-            width: 100%;
-            max-width: 600px; /* Limite de largura para o desktop */
-        }
-
-        .header {
-            background-color: var(--primary-color);
-            color: white;
-            padding: 20px;
-            text-align: center;
-            border-radius: var(--border-radius) var(--border-radius) 0 0;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 1.5em;
-        }
-
-        /* --- PAINEL DE LINKS (GRID) --- */
-        .links-grid {
-            display: grid;
-            /* Duas colunas em telas pequenas, e 3 colunas em telas maiores */
-            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
-            gap: 15px;
-            padding: 10px;
-            background-color: var(--card-background);
-            border-radius: var(--border-radius);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .link-tile {
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 30px 20px;
+            color: #333;
+        }
+
+        header {
+            width: 100%;
+            max-width: 800px;
             text-align: center;
-            text-decoration: none;
-            color: var(--text-color);
-            background-color: #fff;
-            padding: 15px 10px;
-            border-radius: 10px;
-            border: 1px solid #ddd;
-            transition: all 0.2s ease-in-out;
-            min-height: 100px;
+            margin-bottom: 40px;
         }
 
-        .link-tile:hover {
-            background-color: #e9f5ff; /* Fundo azul claro ao passar o mouse */
-            border-color: var(--icon-color);
-            transform: translateY(-3px);
-            box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .link-tile i {
-            font-size: 2.5em;
-            color: var(--icon-color);
+        h1 {
+            color: #2c3e50;
+            font-weight: 700;
             margin-bottom: 10px;
         }
 
-        .link-tile span {
+        /* ESTILO DO FORMULÁRIO DE ENTRADA */
+        #add-link-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #add-link-form input, #add-link-form button {
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        #add-link-form input {
+            flex-grow: 1;
+            min-width: 200px;
+        }
+
+        #add-link-form button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            font-weight: 600;
+        }
+
+        #add-link-form button:hover {
+            background-color: #0056b3;
+        }
+        
+        /* CONTAINER PRINCIPAL DOS LINKS */
+        #links-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 25px;
+            max-width: 900px;
+            width: 100%;
+            padding-top: 20px;
+        }
+
+        /* ESTILO DO ITEM DE ATALHO (o toque 3D) */
+        .link-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 20px 15px;
+            border-radius: 15px;
+            background-color: var(--card-bg);
+            width: 110px;
+            text-align: center;
+            
+            /* Sombra para o Efeito 3D (Elevado) */
+            box-shadow: 
+                0 4px 6px -1px var(--shadow-color), 
+                0 2px 4px -2px rgba(0, 0, 0, 0.1);
+            
+            transition: transform 0.3s, box-shadow 0.3s;
+            position: relative;
+        }
+
+        .link-item:hover {
+            /* Efeito "Apertar" ou "Levantar" */
+            transform: translateY(-5px);
+            box-shadow: 
+                0 10px 15px -3px var(--shadow-color), 
+                0 4px 6px -4px rgba(0, 0, 0, 0.15);
+        }
+
+        .link-item img {
+            width: 55px; /* Tamanho do ícone */
+            height: 55px;
+            object-fit: contain;
+            margin-bottom: 10px;
+            border-radius: 8px;
+        }
+
+        .link-label {
             font-size: 0.9em;
             font-weight: 600;
-            line-height: 1.2;
+            word-break: break-word; /* Garante que nomes longos quebrem a linha */
         }
     </style>
 </head>
 <body>
 
-    <div class="dashboard-container">
-        <header class="header">
-            <h1><i class="fas fa-th-large"></i> Painel de Acesso Rápido</h1>
-        </header>
+    <header>
+        <h1>Meus Links Rápidos</h1>
+        <p>Adicione um site e o ícone será gerado automaticamente.</p>
+        
+        <form id="add-link-form">
+            <input type="url" id="link-input" placeholder="URL do site (ex: https://google.com)" required>
+            <input type="text" id="label-input" placeholder="Nome do Atalho" required>
+            <button type="submit">Adicionar Atalho</button>
+        </form>
+    </header>
 
-        <main class="links-grid">
+    <main id="links-container"></main>
+    
+    <script>
+        const linksContainer = document.getElementById('links-container');
+        const form = document.getElementById('add-link-form');
+        const STORAGE_KEY = 'atalhos_personalizados';
+
+        // 1. CARREGA LINKS SALVOS no navegador do usuário
+        function loadLinks() {
+            const storedLinks = localStorage.getItem(STORAGE_KEY);
+            return storedLinks ? JSON.parse(storedLinks) : [
+                // Links Padrão (aparecem se o usuário não tiver adicionado nenhum)
+                { url: 'https://www.google.com', label: 'Google' },
+                { url: 'https://github.com', label: 'GitHub' },
+                { url: 'https://mail.google.com', label: 'Gmail' }
+            ];
+        }
+
+        // 2. SALVA OS LINKS no navegador do usuário
+        function saveLinks(links) {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+        }
+
+        // 3. CRIA O ELEMENTO HTML DE UM ATALHO
+        function createLinkItem(url, label) {
+            const link = document.createElement('a');
+            link.href = url;
+            link.target = "_blank";
+            link.classList.add('link-item');
+
+            const img = document.createElement('img');
+            // Serviço do Google para obter o favicon de qualquer URL
+            const iconUrl = `https://www.google.com/s2/favicons?sz=64&domain_url=${encodeURIComponent(url)}`;
             
-            <a href="https://sistema.getrak.com/portoleal/msumario/index/index" class="link-tile" target="_blank">
-                <i class="fas fa-map-marked-alt"></i>
-                <span>Rastreador</span>
-            </a>
+            img.src = iconUrl;
+            img.alt = `Logo de ${label}`;
+            
+            const span = document.createElement('span');
+            span.classList.add('link-label');
+            span.textContent = label;
 
-            <a href="https://www.prime-car.com.br/" class="link-tile" target="_blank">
-                <i class="fas fa-handshake"></i>
-                <span>Prime</span>
-            </a>
+            link.appendChild(img);
+            link.appendChild(span);
 
-            <a href="https://www.calculadoratran.com.br/" class="link-tile" target="_blank">
-                <i class="fas fa-calculator"></i>
-                <span>Calculadora</span>
-            </a>
+            return link;
+        }
 
-            <a href="https://nfse-pmv.speedgov.com.br/principal.php" class="link-tile" target="_blank">
-                <i class="fas fa-file-invoice"></i>
-                <span>Nota Fiscal</span>
-            </a>
+        // 4. RENDERIZA (MOSTRA) TODOS OS LINKS
+        function renderLinks(links) {
+            linksContainer.innerHTML = ''; // Limpa o container
+            links.forEach(linkData => {
+                const item = createLinkItem(linkData.url, linkData.label);
+                linksContainer.appendChild(item);
+            });
+        }
 
-            <a href="https://www.prime-car.com.br/planilhas" class="link-tile" target="_blank">
-                <i class="fas fa-file-excel"></i>
-                <span>Planilhas</span>
-            </a>
+        // 5. LÓGICA DE ADICIONAR UM NOVO LINK
+        form.addEventListener('submit', function(event) {
+            event.preventDefault();
 
-            <a href="https://www.prime-car.com.br/radio" class="link-tile" target="_blank">
-                <i class="fas fa-broadcast-tower"></i>
-                <span>Rádio</span>
-            </a>
+            const urlInput = document.getElementById('link-input');
+            const labelInput = document.getElementById('label-input');
 
-            <a href="https://www.prime-car.com.br/w" class="link-tile" target="_blank">
-                <i class="fas fa-globe"></i>
-                <span>Site W</span>
-            </a>
+            const url = urlInput.value.trim();
+            const label = labelInput.value.trim();
 
-            <a href="https://app.powerbi.com/groups/me/reports/e8b69324-4f80-49c3-9b43-92f756015694/ReportSectiona3d700302b1f3c316719" class="link-tile" target="_blank">
-                <i class="fas fa-chart-line"></i>
-                <span>Power BI</span>
-            </a>
+            if (url && label) {
+                // Adiciona o novo link na lista e salva
+                const currentLinks = loadLinks();
+                currentLinks.push({ url: url, label: label });
+                saveLinks(currentLinks);
+                
+                // Atualiza a visualização
+                renderLinks(currentLinks);
 
-            <a href="https://portoleal.gocorp.com.br/admin_gocorp/agregados/lista" class="link-tile" target="_blank">
-                <i class="fas fa-truck"></i>
-                <span>Agregados</span>
-            </a>
+                // Limpa o formulário
+                urlInput.value = '';
+                labelInput.value = '';
+                urlInput.focus();
+            }
+        });
 
-            <a href="https://tabela.portoleal.com.br/" class="link-tile" target="_blank">
-                <i class="fas fa-table"></i>
-                <span>Tabela</span>
-            </a>
+        // 6. INICIALIZAÇÃO: Carrega e mostra os links ao abrir a página
+        document.addEventListener('DOMContentLoaded', () => {
+            renderLinks(loadLinks());
+        });
 
-            <a href="https://www.prime-car.com.br/fiat" class="link-tile" target="_blank">
-                <i class="fas fa-car-side"></i>
-                <span>FIAT</span>
-            </a>
-
-        </main>
-    </div>
-
-    </body>
+    </script>
+</body>
 </html>

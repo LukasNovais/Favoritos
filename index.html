@@ -73,7 +73,7 @@
             margin-bottom: 15px;
         }
 
-        /* ADMIN LOGIN (Novo Layout) */
+        /* ADMIN LOGIN */
         #admin-auth-box {
             display: flex;
             align-items: center;
@@ -127,14 +127,13 @@
 
         #admin-form-container {
             border-left: 5px solid var(--admin-color);
-            display: none; /* Escondido por padrão */
+            display: none;
         }
         
         #admin-form-container.active {
             display: block;
         }
         
-        /* Ajuste responsivo */
         @media (max-width: 650px) {
             .link-form {
                 grid-template-columns: 1fr 1fr;
@@ -145,7 +144,7 @@
         }
 
         /* -------------------------------------- */
-        /* ESTILO DAS ABAS E LINKS (Sem alteração) */
+        /* ESTILO DOS LINKS E BOTÕES DE EXCLUSÃO */
         /* -------------------------------------- */
         #tab-container {
             width: 100%;
@@ -163,7 +162,6 @@
 
         .tab-button {
             padding: 10px 20px;
-            /* ... (restante do estilo de abas) */
             cursor: pointer;
             border: none;
             background-color: transparent;
@@ -188,8 +186,6 @@
             width: 100%;
         }
         
-        /* Estilos dos links e botões de exclusão mantidos do código anterior */
-
         .link-item {
             display: flex;
             flex-direction: column;
@@ -215,6 +211,7 @@
             filter: saturate(1.1);
         }
         
+        /* Botão de Exclusão (Estilo padrão) */
         .delete-btn {
             position: absolute;
             top: 5px;
@@ -229,12 +226,24 @@
             line-height: 18px;
             text-align: center;
             cursor: pointer;
-            opacity: 0;
+            opacity: 0; /* Oculto por padrão */
+            transition: opacity 0.2s, background-color 0.2s;
             z-index: 10;
+            font-weight: bold;
         }
 
+        /* Regra Principal: Mostra o botão ao passar o mouse */
         .link-item:hover .delete-btn { opacity: 1; }
-        .link-item[data-type="admin"] .delete-btn { display: none !important; }
+
+        /* NOVO CSS: Esconde o botão em links do Admin, A MENOS que o Admin esteja logado. */
+        .link-item[data-type="admin"] .delete-btn { 
+            display: none; 
+        }
+
+        /* NOVO CSS: Garante que o botão apareça em links do Admin SE o Admin estiver logado. */
+        body.admin-mode .link-item[data-type="admin"] .delete-btn {
+            display: block; 
+        }
 
     </style>
 </head>
@@ -292,7 +301,7 @@
         
         const ADMIN_LINKS_KEY = 'admin_links_padrao_v3';
         const USER_LINKS_KEY = 'user_links_pessoais_v3';
-        const ADMIN_PASSWORD = 'prime.admin'; // Senha definida
+        const ADMIN_PASSWORD = 'prime.admin';
         
         let activeCategory = '';
         let isAdmin = false;
@@ -325,12 +334,12 @@
         // --- Modo Admin ---
         function updateAdminMode(status) {
             isAdmin = status;
-            document.body.classList.toggle('admin-mode', status);
+            // A classe 'admin-mode' no BODY habilita o CSS para exclusão de links fixos
+            document.body.classList.toggle('admin-mode', status); 
             adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
             adminStatus.textContent = status ? 'ADMIN' : '';
             adminFormContainer.classList.toggle('active', status);
 
-            // Reseta a caixa de autenticação
             adminAuthBox.classList.remove('active');
             adminPasswordInput.style.display = 'none';
             adminAuthBtn.style.display = 'none';
@@ -350,7 +359,7 @@
             link.setAttribute('data-type', type);
             
             const img = document.createElement('img');
-            // Mantém a alta resolução (sz=256) para ícones nítidos
+            // Alta resolução para ícones nítidos
             const iconUrl = `https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(url)}`;
             
             img.src = iconUrl;
@@ -367,6 +376,7 @@
                 e.preventDefault();
                 e.stopPropagation();
                 
+                // Regra de permissão: só permite exclusão se for link pessoal, ou se for link admin E o usuário for admin.
                 if (type === 'admin' && !isAdmin) {
                     alert('Apenas o Administrador pode excluir links padrão.');
                     return;
@@ -413,19 +423,16 @@
             const adminLinks = loadAdminLinks().filter(link => link.category === category);
             const userLinks = loadUserLinks().filter(link => link.category === category);
 
-            // Renderiza Admin (index é o índice no array adminLinks)
             adminLinks.forEach((linkData, index) => {
                 const item = createLinkItem(linkData, index);
                 linksContainer.appendChild(item);
             });
             
-            // Renderiza Usuário (index é o índice no array userLinks)
             userLinks.forEach((linkData, index) => {
                 const item = createLinkItem(linkData, index);
                 linksContainer.appendChild(item);
             });
             
-            // Atualiza botões das abas
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.toggle('active', btn.textContent === category);
             });
@@ -489,7 +496,7 @@
         // --- Lógica de Login Admin ---
         adminLoginBtn.addEventListener('click', () => {
             if (isAdmin) {
-                updateAdminMode(false); // Sair
+                updateAdminMode(false);
             } else {
                 adminAuthBox.classList.add('active');
                 adminPasswordInput.style.display = 'block';
@@ -509,7 +516,6 @@
             }
         });
         
-        // Permite logar com Enter no campo de senha
         adminPasswordInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
                 adminAuthBtn.click();

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos Essenciais (Compacto)</title>
+    <title>Meus Atalhos Essenciais (Somente Texto)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -18,7 +18,6 @@
             --shadow-color: rgba(0, 0, 0, 0.2);
             --delete-color: #dc3545;
             --admin-color: #ffc107;
-            /* Espaçamento mínimo */
             --spacing-unit: 10px;
         }
 
@@ -30,7 +29,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: var(--spacing-unit) 5px; /* Padding ajustado para 5px lateral */
+            padding: var(--spacing-unit) 5px;
             color: #333;
         }
 
@@ -38,14 +37,14 @@
             width: 100%;
             max-width: 900px;
             text-align: center;
-            margin-bottom: var(--spacing-unit); /* Espaçamento mínimo */
+            margin-bottom: var(--spacing-unit);
         }
 
         h1 {
             color: #2c3e50;
             font-weight: 700;
             margin-bottom: 5px;
-            font-size: 1.8em; /* Fonte ligeiramente menor */
+            font-size: 1.8em;
         }
         
         /* -------------------------------------- */
@@ -58,14 +57,14 @@
             flex-direction: column;
             gap: var(--spacing-unit);
             margin-bottom: var(--spacing-unit);
-            padding: 0 5px; /* Garante que o container não vaze */
+            padding: 0 5px;
         }
 
         .link-form-container {
             padding: var(--spacing-unit);
             border-radius: 8px;
             background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05); /* Sombra mais suave */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
 
         .link-form-container h3 {
@@ -87,7 +86,7 @@
 
         #admin-auth-box input[type="password"] {
             display: none;
-            padding: 6px 10px; /* Input menor */
+            padding: 6px 10px;
             border: 1px solid #ccc;
             border-radius: 4px;
             width: 100px;
@@ -101,7 +100,7 @@
             background-color: var(--admin-color);
             color: #333;
             border: none;
-            padding: 6px 10px; /* Botão menor */
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
@@ -120,11 +119,11 @@
         .link-form {
             display: grid;
             grid-template-columns: 1fr 1fr auto auto;
-            gap: 5px; /* Espaçamento entre inputs reduzido */
+            gap: 5px;
         }
 
         .link-form input, .link-form button, .link-form select {
-            padding: 8px 10px; /* Padding de input reduzido */
+            padding: 8px 10px;
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 14px;
@@ -139,10 +138,9 @@
             display: block;
         }
         
-        /* Quebra rápida do formulário em telas pequenas */
         @media (max-width: 500px) {
             .link-form {
-                grid-template-columns: 1fr; /* Coluna única no celular */
+                grid-template-columns: 1fr;
                 gap: 5px;
             }
             .link-form button {
@@ -151,7 +149,7 @@
         }
 
         /* -------------------------------------- */
-        /* ESTILO DOS LINKS E BOTÕES DE EXCLUSÃO */
+        /* ESTILO DOS LINKS (SOMENTE TEXTO) */
         /* -------------------------------------- */
         #tab-container {
             width: 100%;
@@ -162,7 +160,7 @@
         #tabs {
             display: flex;
             justify-content: center;
-            border-bottom: 1px solid #ccc; /* Linha mais fina */
+            border-bottom: 1px solid #ccc;
             margin-bottom: 15px;
             flex-wrap: wrap;
         }
@@ -171,7 +169,7 @@
             padding: 8px 12px;
             cursor: pointer;
             font-size: 1em;
-            margin: 0 2px; /* Margem reduzida */
+            margin: 0 2px;
         }
 
         .tab-button.active {
@@ -179,59 +177,75 @@
         }
         
         #links-container {
-            display: flex;
-            flex-wrap: wrap;
-            justify-center: center;
-            gap: 15px; /* Espaçamento entre ícones reduzido (Compacto) */
+            display: grid; /* Mudança para grid para alinhamento horizontal */
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); /* 2 ou mais links por linha */
+            gap: 10px; /* Espaçamento entre links reduzido */
             max-width: 900px;
             width: 100%;
-            padding: 0 5px; /* Garante que o container não vaze */
+            padding: 0 5px;
         }
         
         .link-item {
-            width: 90px; /* Largura do ícone reduzida */
-            padding: 10px; /* Padding reduzido */
-            border-radius: 10px;
-            box-shadow: 0 2px 4px -1px var(--shadow-color), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
-        }
-
-        .link-item img {
-            width: 50px; /* Tamanho do ícone reduzido */
-            height: 50px;
-            margin-bottom: 5px; /* Margem reduzida */
+            /* Estilo para parecer um botão simples e compacto */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 8px 12px; /* Padding ajustado */
             border-radius: 6px;
+            background-color: var(--card-bg);
+            text-align: left;
+            position: relative;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+            transition: background-color 0.2s;
+            overflow: hidden; /* Garante que o texto não vaze */
         }
         
+        .link-item:hover {
+            background-color: #f5f5f5;
+        }
+
         .link-item .link-label {
-            font-size: 0.75em; /* Fonte do nome do link menor */
-            word-break: break-word;
-            line-height: 1.2;
-            height: 2.4em; /* Limita a duas linhas */
+            font-size: 0.9em;
+            font-weight: 500;
+            white-space: nowrap;
             overflow: hidden;
+            text-overflow: ellipsis; /* Adiciona '...' se o texto for muito longo */
+            flex-grow: 1;
+            padding-right: 5px; /* Espaçamento antes do botão de exclusão */
         }
 
         .delete-btn {
-            top: 3px;
-            right: 3px;
+            /* Botão de exclusão ao lado direito do texto */
+            position: static;
+            flex-shrink: 0;
+            margin-left: 5px;
             width: 18px;
             height: 18px;
             font-size: 12px;
             line-height: 16px;
+            background-color: var(--delete-color);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.2s;
         }
 
         .link-item:hover .delete-btn { opacity: 1; }
         .link-item[data-type="admin"] .delete-btn { display: none; }
-        body.admin-mode .link-item[data-type="admin"] .delete-btn { display: block; }
+        body.admin-mode .link-item[data-type="admin"] .delete-btn { opacity: 1; display: block; }
 
-        /* Garante que o layout não vaze em NENHUM celular */
-        @media (max-width: 320px) {
-             #links-container {
-                 justify-content: space-around;
-             }
-             .link-item {
-                 width: 80px; /* Largura mínima */
-                 padding: 8px;
-             }
+        /* Ajustes para mobile */
+        @media (max-width: 480px) {
+            #links-container {
+                grid-template-columns: 1fr; /* Links em coluna única em celulares pequenos */
+            }
+            .link-item {
+                padding: 10px 12px;
+            }
         }
     </style>
 </head>
@@ -270,7 +284,6 @@
         const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; 
         const ADMIN_PASSWORD = 'prime.admin'; 
         const CATEGORIES = ['Ferramentas', 'Redes Sociais']; // Categorias visíveis
-        // ... (resto do JS, mantido da resposta anterior) ...
 
         // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-container');
@@ -331,12 +344,7 @@
             link.classList.add('link-item');
             link.setAttribute('data-type', type);
             
-            const img = document.createElement('img');
-            // Ícones de alta resolução da web
-            const iconUrl = `https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(url)}`;
-            
-            img.src = iconUrl;
-            img.alt = `Logo de ${label}`;
+            // ÍCONE REMOVIDO AQUI
             
             const span = document.createElement('span');
             span.classList.add('link-label');
@@ -359,9 +367,8 @@
                 }
             });
 
-            link.appendChild(deleteBtn);
-            link.appendChild(img);
-            link.appendChild(span);
+            link.appendChild(span); // Texto
+            link.appendChild(deleteBtn); // Botão X
 
             return link;
         }

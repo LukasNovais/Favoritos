@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos Essenciais (Arrastar)</title>
+    <title>Meus Atalhos Essenciais (Gerador)</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -18,6 +18,7 @@
             --shadow-color: rgba(0, 0, 0, 0.2);
             --delete-color: #dc3545;
             --admin-color: #ffc107;
+            --success-color: #28a745;
             --spacing-unit: 10px;
         }
 
@@ -138,6 +139,40 @@
             display: block;
         }
         
+        /* Gerador de Código */
+        #generator-box {
+            padding: var(--spacing-unit);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            background-color: #fff;
+            margin-top: 15px;
+        }
+
+        #generator-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        #output-code {
+            width: 100%;
+            height: 250px;
+            margin-top: 5px;
+            padding: 10px;
+            box-sizing: border-box;
+            border: 1px dashed #ccc;
+            background-color: #f8f8f8;
+            font-family: 'Consolas', 'Courier New', monospace;
+            font-size: 12px;
+            resize: vertical;
+        }
+
         @media (max-width: 500px) {
             .link-form {
                 grid-template-columns: 1fr;
@@ -198,7 +233,7 @@
             position: relative;
             box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
             transition: background-color 0.2s, transform 0.2s;
-            cursor: pointer; /* Indica que é clicável/arrastável */
+            cursor: pointer;
             overflow: hidden;
         }
         
@@ -216,24 +251,21 @@
             padding-right: 5px;
         }
         
-        /* -------------------------------------- */
         /* ESTILOS DE DRAG AND DROP */
-        /* -------------------------------------- */
         .link-item.dragging {
-            opacity: 0.3; /* Item sendo arrastado fica semi-transparente */
+            opacity: 0.3;
             transform: scale(0.98);
         }
         
         .link-item.drop-target-above {
             border-top: 2px solid var(--primary-color);
-            padding-top: 6px; /* Ajusta o padding para compensar a borda */
+            padding-top: 6px;
         }
         
         .link-item.drop-target-below {
             border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 6px; /* Ajusta o padding para compensar a borda */
+            padding-bottom: 6px;
         }
-        /* Fim dos estilos de Drag and Drop */
 
         .delete-btn {
             position: static;
@@ -255,16 +287,14 @@
         .link-item:hover .delete-btn { opacity: 1; }
         .link-item[data-type="admin"] .delete-btn { display: none; }
         
-        /* No modo Admin, o botão de exclusão sempre aparece (ou fica visível ao passar o mouse) e o item é arrastável */
         body.admin-mode .link-item {
-            cursor: grab; /* Indica que o item pode ser arrastado */
+            cursor: grab;
         }
         body.admin-mode .link-item[data-type="admin"] .delete-btn { 
             opacity: 1; 
             display: block; 
         }
 
-        /* Ajustes para mobile */
         @media (max-width: 480px) {
             #links-container {
                 grid-template-columns: 1fr;
@@ -297,6 +327,12 @@
                 <select id="admin-category-select" required></select>
                 <button type="submit">Salvar Link Padrão</button>
             </form>
+
+            <div id="generator-box">
+                <button id="generator-btn">Gerar Código Final (Copiar e Salvar)</button>
+                <textarea id="output-code" placeholder="O código HTML completo aparecerá aqui após clicar no botão."></textarea>
+            </div>
+
         </div>
     </div>
     
@@ -310,6 +346,12 @@
         const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; 
         const ADMIN_PASSWORD = 'prime.admin'; 
         const CATEGORIES = ['Ferramentas', 'Redes Sociais']; 
+        
+        // ** AQUI FICA A LISTA DE LINKS PADRÃO EMBUTIDA NO HTML **
+        // Se a lista no localStorage estiver vazia, o sistema usa esta lista.
+        // Copie a lista JSON atualizada do console (Passo 1. Exportar) e cole aqui.
+        const DEFAULT_LINKS_JSON = '[{"url":"https://www.google.com","label":"Google","category":"Ferramentas","type":"admin"},{"url":"https://github.com","label":"GitHub","category":"Ferramentas","type":"admin"},{"url":"https://www.instagram.com","label":"Instagram","category":"Redes Sociais","type":"admin"}]';
+        // -----------------------------------------------------------
 
         // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-container');
@@ -321,10 +363,12 @@
         const adminPasswordInput = document.getElementById('admin-password-input');
         const adminAuthBox = document.getElementById('admin-auth-box');
         const adminStatus = document.getElementById('admin-status');
+        const generatorBtn = document.getElementById('generator-btn'); // Novo
+        const outputCodeArea = document.getElementById('output-code'); // Novo
         
         let activeCategory = '';
         let isAdmin = false;
-        let draggedItem = null; // Item que está sendo arrastado
+        let draggedItem = null; 
 
         // ----------------------------------------
         // 1. FUNÇÕES DE ACESSO AO LOCALSTORAGE
@@ -332,11 +376,8 @@
         
         function loadAdminLinks() {
             const storedLinks = localStorage.getItem(ADMIN_LINKS_KEY);
-            return storedLinks ? JSON.parse(storedLinks) : [
-                { url: 'https://www.google.com', label: 'Google', category: 'Ferramentas', type: 'admin' },
-                { url: 'https://github.com', label: 'GitHub', category: 'Ferramentas', type: 'admin' },
-                { url: 'https://www.instagram.com', label: 'Instagram', category: 'Redes Sociais', type: 'admin' },
-            ];
+            // Se não houver nada no localStorage, ele usa o JSON embutido
+            return storedLinks ? JSON.parse(storedLinks) : JSON.parse(DEFAULT_LINKS_JSON);
         }
 
         function saveAdminLinks(links) {
@@ -344,9 +385,42 @@
         }
 
         // ----------------------------------------
-        // 2. LÓGICA DE DRAG AND DROP
+        // 2. FUNÇÃO DE GERAÇÃO AUTOMÁTICA DE CÓDIGO (NOVO)
         // ----------------------------------------
+        
+        function generateFinalHtml() {
+            const currentLinks = loadAdminLinks();
+            const newJsonString = JSON.stringify(currentLinks);
+            
+            // Pega o código HTML atual (do body) para manter o layout e estilos
+            let templateHtml = document.documentElement.outerHTML;
 
+            // Encontra a linha de código onde o DEFAULT_LINKS_JSON está definido
+            const regex = /(const\s+DEFAULT_LINKS_JSON\s+=\s+')([^']+?)(';)/;
+            
+            // Substitui o JSON antigo pelo novo JSON serializado
+            const newHtml = templateHtml.replace(regex, `$1${newJsonString}$3`);
+
+            outputCodeArea.value = newHtml;
+            outputCodeArea.select();
+            
+            try {
+                // Tenta copiar para a área de transferência
+                document.execCommand('copy');
+                generatorBtn.textContent = 'Copiado para a área de transferência! (Substitua no seu host)';
+                setTimeout(() => {
+                    generatorBtn.textContent = 'Gerar Código Final (Copiar e Salvar)';
+                }, 3000);
+            } catch (err) {
+                // Se a cópia falhar (permissões), apenas avisa o usuário
+                generatorBtn.textContent = 'Código gerado. Copie o texto da caixa e substitua no seu host!';
+            }
+        }
+        
+        // ----------------------------------------
+        // 3. LÓGICA DE DRAG AND DROP
+        // ----------------------------------------
+        
         function handleDragStart(e) {
             if (!isAdmin) {
                 e.preventDefault();
@@ -375,12 +449,10 @@
             const target = e.target.closest('.link-item');
             if (!target || target === draggedItem) return;
 
-            // Remove classes de highlight de todos os itens
             linksContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
                 el.classList.remove('drop-target-above', 'drop-target-below');
             });
             
-            // Calcula se o mouse está na metade superior ou inferior do item
             const rect = target.getBoundingClientRect();
             const midpoint = rect.y + rect.height / 2;
 
@@ -403,10 +475,8 @@
             
             let links = loadAdminLinks();
             
-            // Filtra apenas os links da categoria ativa (o que está sendo visualizado)
             const activeLinks = links.filter(link => link.category === activeCategory);
             
-            // Encontra os índices reais no array principal
             const originalDraggedIndex = links.findIndex(link => link.url === activeLinks[draggedIndex].url);
             const originalTargetIndex = links.findIndex(link => link.url === activeLinks[targetIndex].url);
 
@@ -414,13 +484,11 @@
 
             const [movedLink] = links.splice(originalDraggedIndex, 1);
             
-            // Ajusta o índice de destino se o item for solto ACIMA de outro item.
             let dropPosition = originalTargetIndex;
             if (target.classList.contains('drop-target-below')) {
                 dropPosition = originalTargetIndex + 1;
             }
 
-            // Garante que o índice não vá além do final
             if (dropPosition > links.length) {
                 links.push(movedLink);
             } else {
@@ -429,11 +497,12 @@
 
             saveAdminLinks(links);
             renderLinks(activeCategory);
+            outputCodeArea.value = 'Links alterados. Clique em "Gerar Código Final" para salvar a nova ordem.'; // Avisa para gerar novo código
         }
 
 
         // ----------------------------------------
-        // 3. LÓGICA DE EXIBIÇÃO E GERENCIAMENTO
+        // 4. LÓGICA DE EXIBIÇÃO E GERENCIAMENTO
         // ----------------------------------------
 
         function updateAdminMode(status) {
@@ -447,6 +516,7 @@
             adminPasswordInput.style.display = 'none';
             adminAuthBtn.style.display = 'none';
             adminPasswordInput.value = '';
+            outputCodeArea.value = ''; // Limpa a área de código ao entrar/sair
 
             renderLinks(activeCategory);
         }
@@ -459,7 +529,7 @@
             link.target = "_blank";
             link.classList.add('link-item');
             link.setAttribute('data-type', type);
-            link.setAttribute('data-index', index); // Adiciona o índice para Drag/Drop
+            link.setAttribute('data-index', index); 
             
             if (isAdmin) {
                 link.setAttribute('draggable', 'true');
@@ -502,11 +572,9 @@
         function handleDeleteAdminLink(indexToDelete) {
             let links = loadAdminLinks();
             
-            // O indexToDelete é o índice na categoria ATUAL, não no array principal.
             const activeLinks = links.filter(link => link.category === activeCategory);
             const linkToDelete = activeLinks[indexToDelete];
             
-            // Encontra e remove o link no array principal
             const indexToRemove = links.findIndex(link => link.url === linkToDelete.url && link.category === linkToDelete.category);
             if (indexToRemove > -1) {
                 links.splice(indexToRemove, 1);
@@ -514,6 +582,7 @@
 
             saveAdminLinks(links);
             renderLinks(activeCategory);
+            outputCodeArea.value = 'Links alterados. Clique em "Gerar Código Final" para salvar a nova ordem.'; // Avisa para gerar novo código
         }
         
         function renderLinks(category) {
@@ -521,8 +590,6 @@
             linksContainer.innerHTML = '';
             
             const allLinks = loadAdminLinks();
-            
-            // Cria um novo array temporário para renderização, apenas com links da categoria ativa
             const adminLinks = allLinks.filter(link => link.category === category);
 
             adminLinks.forEach((linkData, index) => {
@@ -559,7 +626,7 @@
         }
 
         // ----------------------------------------
-        // 4. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
+        // 5. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
         // ----------------------------------------
 
         function handleAddLink(event) {
@@ -581,6 +648,7 @@
                     saveAdminLinks(links);
                     renderLinks(categorySelected);
                     form.reset();
+                    outputCodeArea.value = 'Novo link adicionado. Clique em "Gerar Código Final" para salvar a alteração.'; // Avisa para gerar novo código
                 } else {
                     alert('Link fixo já existe!');
                 }
@@ -588,6 +656,7 @@
         }
         
         adminAddForm.addEventListener('submit', handleAddLink);
+        generatorBtn.addEventListener('click', generateFinalHtml); // NOVO LISTENER
 
         // --- Lógica de Login Admin ---
         adminLoginBtn.addEventListener('click', () => {

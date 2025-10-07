@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos 3D Dinâmicos</title>
+    <title>Meus Atalhos Categorizados</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* -------------------------------------- */
-        /* CSS: ESTILO E VISUAL "3D" */
+        /* CSS: ESTILO GERAL E ABAS */
         /* -------------------------------------- */
         :root {
             --primary-color: #007bff;
             --background-color: #f0f2f5;
             --card-bg: #ffffff;
             --shadow-color: rgba(0, 0, 0, 0.2);
-            --delete-color: #dc3545; /* Vermelho para o botão de exclusão */
+            --delete-color: #dc3545;
         }
 
         body {
@@ -33,9 +33,9 @@
 
         header {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
         }
 
         h1 {
@@ -44,31 +44,28 @@
             margin-bottom: 10px;
         }
 
-        /* ESTILO DO FORMULÁRIO DE ENTRADA */
+        /* ESTILO DO FORMULÁRIO */
         #add-link-form {
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
             justify-content: center;
             margin-top: 20px;
+            padding: 20px;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
-        #add-link-form input, #add-link-form button {
+        #add-link-form input, #add-link-form button, #category-select {
             padding: 12px 15px;
             border: 1px solid #ddd;
             border-radius: 8px;
             font-size: 16px;
         }
 
-        #add-link-form input {
-            flex-grow: 1;
-            min-width: 200px;
-        }
-        
-        #link-input::placeholder {
-            color: #aaa;
-            font-style: italic;
-        }
+        #add-link-form input { flex-grow: 1; min-width: 150px; }
+        #link-input::placeholder { color: #aaa; font-style: italic; }
 
         #add-link-form button {
             background-color: var(--primary-color);
@@ -83,6 +80,39 @@
             background-color: #0056b3;
         }
         
+        /* -------------------------------------- */
+        /* ESTILO DAS ABAS */
+        /* -------------------------------------- */
+        #tab-container {
+            width: 100%;
+            max-width: 900px;
+            margin-top: 20px;
+        }
+
+        #tabs {
+            display: flex;
+            justify-content: center;
+            border-bottom: 2px solid #ccc;
+            margin-bottom: 30px;
+        }
+
+        .tab-button {
+            padding: 12px 25px;
+            cursor: pointer;
+            border: none;
+            background-color: transparent;
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #555;
+            transition: color 0.3s, border-bottom 0.3s;
+            margin: 0 5px;
+        }
+
+        .tab-button.active {
+            color: var(--primary-color);
+            border-bottom: 3px solid var(--primary-color);
+        }
+        
         /* CONTAINER PRINCIPAL DOS LINKS */
         #links-container {
             display: flex;
@@ -91,10 +121,11 @@
             gap: 25px;
             max-width: 900px;
             width: 100%;
-            padding-top: 20px;
         }
 
-        /* ESTILO DO ITEM DE ATALHO (o toque 3D) */
+        /* -------------------------------------- */
+        /* ESTILO DO ATALHO (3D e Ícones) */
+        /* -------------------------------------- */
         .link-item {
             display: flex;
             flex-direction: column;
@@ -106,9 +137,8 @@
             background-color: var(--card-bg);
             width: 110px;
             text-align: center;
-            position: relative; /* Essencial para posicionar o botão de exclusão */
+            position: relative;
             
-            /* Sombra para o Efeito 3D (Elevado) */
             box-shadow: 
                 0 4px 6px -1px var(--shadow-color), 
                 0 2px 4px -2px rgba(0, 0, 0, 0.1);
@@ -124,8 +154,7 @@
         }
 
         .link-item img {
-            /* Tamanho ajustado para maior definição */
-            width: 60px; 
+            width: 60px;
             height: 60px;
             object-fit: contain;
             margin-bottom: 10px;
@@ -153,13 +182,13 @@
             line-height: 18px;
             text-align: center;
             cursor: pointer;
-            opacity: 0; /* Esconde o botão por padrão */
+            opacity: 0;
             transition: opacity 0.2s, background-color 0.2s;
             z-index: 10;
             font-weight: bold;
         }
 
-        /* Mostra o botão de exclusão ao passar o mouse sobre o atalho */
+        /* Só mostra o botão de exclusão nos links do usuário */
         .link-item:hover .delete-btn {
             opacity: 1;
         }
@@ -168,66 +197,85 @@
             background-color: #c82333;
         }
 
-        /* Quando o botão de exclusão está ativo (pressionado) */
-        .link-item.deleting {
-            opacity: 0.5; /* Efeito visual para indicar exclusão */
+        /* Esconde o botão em links fixos (admin) */
+        .link-item[data-fixed="true"] .delete-btn {
+            display: none;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <h1>Meus Links Rápidos</h1>
-        <p>Adicione, navegue e exclua seus atalhos.</p>
+        <h1>Meus Atalhos Dinâmicos</h1>
+        <p>Adicione um site, escolha a categoria e o ícone será gerado automaticamente.</p>
         
         <form id="add-link-form">
-            <input type="text" id="link-input" placeholder="Ex: www.github.com" required>
+            <input type="text" id="link-input" placeholder="Ex: www.site.com" required>
             <input type="text" id="label-input" placeholder="Nome do Atalho" required>
+            <select id="category-select" required>
+                </select>
             <button type="submit">Adicionar Atalho</button>
         </form>
     </header>
 
-    <main id="links-container"></main>
+    <div id="tab-container">
+        <div id="tabs"></div>
+
+        <main id="links-container"></main>
+    </div>
     
     <script>
         const linksContainer = document.getElementById('links-container');
+        const tabsContainer = document.getElementById('tabs');
+        const categorySelect = document.getElementById('category-select');
         const form = document.getElementById('add-link-form');
-        const STORAGE_KEY = 'atalhos_personalizados';
+        const STORAGE_KEY = 'atalhos_personalizados_v2';
+        let activeCategory = '';
 
-        // 1. CARREGA LINKS SALVOS no navegador do usuário
-        function loadLinks() {
+        // ----------------------------------------
+        // ADMIN: LINKS PADRÃO (FIXOS)
+        // Defina seus links fixos aqui. O isFixed: true impede a exclusão.
+        // ----------------------------------------
+        const ADMIN_LINKS = [
+            { url: 'https://www.google.com', label: 'Google', category: 'Ferramentas', isFixed: true },
+            { url: 'https://www.youtube.com', label: 'YouTube', category: 'Redes Sociais', isFixed: true },
+            { url: 'https://br.linkedin.com/', label: 'LinkedIn', category: 'Redes Sociais', isFixed: true },
+        ];
+
+        // ----------------------------------------
+        // CONFIGURAÇÃO DE CATEGORIAS
+        // ----------------------------------------
+        const CATEGORIES = ['Ferramentas', 'Redes Sociais', 'Meus Links'];
+
+        // 1. CARREGA LINKS SALVOS (do usuário)
+        function loadUserLinks() {
             const storedLinks = localStorage.getItem(STORAGE_KEY);
-            return storedLinks ? JSON.parse(storedLinks) : [
-                // Links Padrão
-                { url: 'https://www.google.com', label: 'Google' },
-                { url: 'https://github.com', label: 'GitHub' },
-                { url: 'https://mail.google.com', label: 'Gmail' }
-            ];
+            return storedLinks ? JSON.parse(storedLinks) : [];
         }
 
-        // 2. SALVA OS LINKS no navegador do usuário
-        function saveLinks(links) {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(links));
+        // Combina links fixos e links do usuário
+        function getAllLinks() {
+            return [...ADMIN_LINKS, ...loadUserLinks()];
+        }
+
+        // 2. SALVA OS LINKS (apenas os do usuário)
+        function saveUserLinks(links) {
+            // Filtra e salva apenas os links que NÃO são fixos
+            const userOnlyLinks = links.filter(link => !link.isFixed);
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(userOnlyLinks));
         }
 
         // 3. CRIA O ELEMENTO HTML DE UM ATALHO
         function createLinkItem(linkData, index) {
-            const { url, label } = linkData;
+            const { url, label, isFixed } = linkData;
             
             const link = document.createElement('a');
             link.href = url;
             link.target = "_blank";
             link.classList.add('link-item');
-            
-            // Usamos um div para o link completo para que o botão de exclusão não o ative
-            const linkContent = document.createElement('div');
-            linkContent.style.display = 'flex';
-            linkContent.style.flexDirection = 'column';
-            linkContent.style.alignItems = 'center';
-            linkContent.style.width = '100%';
+            link.setAttribute('data-fixed', isFixed ? 'true' : 'false'); // Marca se é fixo
 
             const img = document.createElement('img');
-            // Serviço do Google para obter o favicon. O 'sz=128' busca uma imagem de alta resolução.
             const iconUrl = `https://www.google.com/s2/favicons?sz=128&domain_url=${encodeURIComponent(url)}`;
             
             img.src = iconUrl;
@@ -237,70 +285,116 @@
             span.classList.add('link-label');
             span.textContent = label;
             
-            // ----------------------------------------
-            // NOVO: BOTÃO DE EXCLUSÃO
-            // ----------------------------------------
-            const deleteBtn = document.createElement('button');
-            deleteBtn.textContent = 'X';
-            deleteBtn.classList.add('delete-btn');
-            deleteBtn.addEventListener('click', (e) => {
-                e.preventDefault(); // Impede que o clique abra o link
-                handleDeleteLink(index); // Chama a função de exclusão
-            });
+            // Botão de Exclusão (só adiciona se NÃO for um link fixo)
+            if (!isFixed) {
+                const deleteBtn = document.createElement('button');
+                deleteBtn.textContent = 'X';
+                deleteBtn.classList.add('delete-btn');
+                deleteBtn.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    e.stopPropagation(); // Impede clique no link
+                    handleDeleteLink(index);
+                });
+                link.appendChild(deleteBtn);
+            }
 
-            link.appendChild(deleteBtn);
             link.appendChild(img);
             link.appendChild(span);
 
             return link;
         }
 
-        // 4. LÓGICA DE EXCLUSÃO
+        // 4. LÓGICA DE EXCLUSÃO (APENAS PARA LINKS DO USUÁRIO)
         function handleDeleteLink(indexToDelete) {
+            let userLinks = loadUserLinks();
+            
             if (confirm("Tem certeza que deseja remover este atalho?")) {
-                let currentLinks = loadLinks();
-                // Remove o item do array baseado no índice
-                currentLinks.splice(indexToDelete, 1);
-                saveLinks(currentLinks);
-                renderLinks(currentLinks); // Redesenha a lista
+                userLinks.splice(indexToDelete, 1);
+                saveUserLinks(userLinks);
+                renderLinks(activeCategory); // Redesenha a lista
             }
         }
 
-        // 5. RENDERIZA (MOSTRA) TODOS OS LINKS
-        function renderLinks(links) {
-            linksContainer.innerHTML = ''; // Limpa o container
-            // Passamos o índice (index) para que o botão de exclusão saiba qual item remover
-            links.forEach((linkData, index) => {
-                const item = createLinkItem(linkData, index);
+        // 5. RENDERIZA (MOSTRA) OS LINKS DA CATEGORIA ATIVA
+        function renderLinks(category) {
+            activeCategory = category;
+            linksContainer.innerHTML = '';
+            
+            // Filtra todos os links (admin + usuário) pela categoria ativa
+            const allLinks = getAllLinks().filter(link => link.category === category);
+            
+            // Renderiza apenas os links da categoria ativa
+            allLinks.forEach((linkData, globalIndex) => {
+                // Se for um link do usuário, precisamos encontrar seu índice no array 'userLinks'
+                // para garantir que a exclusão funcione corretamente.
+                let indexForDeletion = -1;
+                if (!linkData.isFixed) {
+                    const userLinks = loadUserLinks();
+                    // O índice de exclusão deve ser o índice no array de links do USUÁRIO
+                    indexForDeletion = userLinks.findIndex(ul => ul.url === linkData.url && ul.label === linkData.label);
+                }
+
+                const item = createLinkItem(linkData, indexForDeletion);
                 linksContainer.appendChild(item);
             });
+            
+            // Atualiza os botões das abas
+            document.querySelectorAll('.tab-button').forEach(btn => {
+                btn.classList.toggle('active', btn.textContent === category);
+            });
+        }
+        
+        // 6. CRIA OS BOTÕES DAS ABAS E O SELETOR DO FORMULÁRIO
+        function initializeCategories() {
+            tabsContainer.innerHTML = '';
+            categorySelect.innerHTML = '';
+
+            CATEGORIES.forEach(category => {
+                // Botões de aba
+                const tabBtn = document.createElement('button');
+                tabBtn.textContent = category;
+                tabBtn.classList.add('tab-button');
+                tabBtn.addEventListener('click', () => renderLinks(category));
+                tabsContainer.appendChild(tabBtn);
+                
+                // Opções do Seletor
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                categorySelect.appendChild(option);
+            });
+            
+            // Define a primeira categoria como ativa inicialmente
+            activeCategory = CATEGORIES[0];
         }
 
-        // 6. LÓGICA DE ADICIONAR UM NOVO LINK
+        // 7. LÓGICA DE ADICIONAR UM NOVO LINK
         form.addEventListener('submit', function(event) {
             event.preventDefault();
 
             const urlInput = document.getElementById('link-input');
             const labelInput = document.getElementById('label-input');
+            const categorySelected = categorySelect.value;
 
             let url = urlInput.value.trim();
             const label = labelInput.value.trim();
 
-            if (url && label) {
+            if (url && label && categorySelected) {
                 // Adiciona o https:// se não houver protocolo.
                 if (!url.startsWith('http://') && !url.startsWith('https://')) {
                     url = 'https://' + url;
                 }
 
-                // Adiciona o novo link na lista e salva
-                const currentLinks = loadLinks();
-                // Verifica se o link já existe para evitar duplicatas (opcional)
-                const exists = currentLinks.some(link => link.url === url);
+                const newLink = { url: url, label: label, category: categorySelected, isFixed: false };
+                
+                let userLinks = loadUserLinks();
+                // Verifica duplicatas
+                const exists = userLinks.some(link => link.url === url);
                 
                 if (!exists) {
-                    currentLinks.push({ url: url, label: label });
-                    saveLinks(currentLinks);
-                    renderLinks(currentLinks); // Atualiza a visualização
+                    userLinks.push(newLink);
+                    saveUserLinks(userLinks);
+                    renderLinks(categorySelected); // Atualiza e muda para a categoria adicionada
                 } else {
                     alert('Este site já foi adicionado!');
                 }
@@ -312,9 +406,10 @@
             }
         });
 
-        // 7. INICIALIZAÇÃO: Carrega e mostra os links ao abrir a página
+        // 8. INICIALIZAÇÃO
         document.addEventListener('DOMContentLoaded', () => {
-            renderLinks(loadLinks());
+            initializeCategories(); // Cria as abas e o seletor
+            renderLinks(activeCategory); // Renderiza a primeira categoria
         });
 
     </script>

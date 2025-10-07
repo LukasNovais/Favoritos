@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos Categorizados</title>
+    <title>Meus Atalhos Essenciais</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
     <style>
         /* -------------------------------------- */
-        /* CSS: ESTILO GERAL E ADMIN */
+        /* CSS: ESTILO GERAL E LAYOUT COMPACTO */
         /* -------------------------------------- */
         :root {
             --primary-color: #007bff;
@@ -17,7 +17,7 @@
             --card-bg: #ffffff;
             --shadow-color: rgba(0, 0, 0, 0.2);
             --delete-color: #dc3545;
-            --admin-color: #ffc107; /* Amarelo para o admin */
+            --admin-color: #ffc107;
         }
 
         body {
@@ -28,7 +28,7 @@
             align-items: center;
             min-height: 100vh;
             margin: 0;
-            padding: 30px 20px;
+            padding: 20px 10px;
             color: #333;
         }
 
@@ -36,64 +36,86 @@
             width: 100%;
             max-width: 900px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         h1 {
             color: #2c3e50;
             font-weight: 700;
-            margin-bottom: 10px;
+            margin-bottom: 5px;
+            font-size: 2em;
         }
-
-        /* Botão de Acesso Admin */
-        #admin-login-btn {
-            background-color: var(--admin-color);
-            color: #333;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            margin-top: 15px;
-            transition: background-color 0.3s;
-        }
-
-        #admin-login-btn:hover {
-            background-color: #e0a800;
-        }
-
-        /* Mensagem de status Admin */
-        #admin-status {
-            font-weight: 600;
-            margin-top: 10px;
-            color: var(--admin-color);
-        }
-
-        /* Estilos dos Formulários (Admin e Usuário) */
-        .link-form-container {
+        
+        /* -------------------------------------- */
+        /* LAYOUT DOS FORMULÁRIOS (Compacto) */
+        /* -------------------------------------- */
+        #top-controls {
             width: 100%;
-            max-width: 700px;
-            margin: 20px auto;
-            padding: 20px;
-            border-radius: 10px;
+            max-width: 900px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .link-form-container {
+            padding: 15px;
+            border-radius: 8px;
             background-color: #fff;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         }
-        
-        #admin-form-container {
-            border-left: 5px solid var(--admin-color);
-            display: none; /* Escondido por padrão */
+
+        .link-form-container h3 {
+            font-size: 1.1em;
+            margin-top: 0;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 8px;
+            margin-bottom: 15px;
         }
-        
-        #admin-form-container.active {
+
+        /* ADMIN LOGIN (Novo Layout) */
+        #admin-auth-box {
+            display: flex;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 10px;
+            padding-bottom: 10px;
+        }
+
+        #admin-auth-box.active input, #admin-auth-box.active #admin-auth-btn {
             display: block;
         }
 
+        #admin-auth-box input[type="password"] {
+            display: none;
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            width: 120px;
+        }
+
+        #admin-login-btn, #admin-auth-btn {
+            background-color: var(--admin-color);
+            color: #333;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+        }
+
+        #admin-status {
+            font-weight: 600;
+            color: var(--admin-color);
+            margin-left: 10px;
+        }
+        
+        /* Formulários de Adição */
         .link-form {
-            display: flex;
+            display: grid;
+            grid-template-columns: 1fr 1fr auto auto;
             gap: 10px;
-            flex-wrap: wrap;
-            justify-content: center;
         }
 
         .link-form input, .link-form button, .link-form select {
@@ -103,18 +125,27 @@
             font-size: 15px;
         }
 
-        .link-form input { flex-grow: 1; min-width: 120px; }
-
-        .link-form button {
-            background-color: var(--primary-color);
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-weight: 600;
+        #admin-form-container {
+            border-left: 5px solid var(--admin-color);
+            display: none; /* Escondido por padrão */
+        }
+        
+        #admin-form-container.active {
+            display: block;
+        }
+        
+        /* Ajuste responsivo */
+        @media (max-width: 650px) {
+            .link-form {
+                grid-template-columns: 1fr 1fr;
+            }
+            .link-form button {
+                grid-column: span 2;
+            }
         }
 
         /* -------------------------------------- */
-        /* ESTILO DAS ABAS */
+        /* ESTILO DAS ABAS E LINKS (Sem alteração) */
         /* -------------------------------------- */
         #tab-container {
             width: 100%;
@@ -127,10 +158,12 @@
             justify-content: center;
             border-bottom: 2px solid #ccc;
             margin-bottom: 30px;
+            flex-wrap: wrap;
         }
 
         .tab-button {
-            padding: 12px 25px;
+            padding: 10px 20px;
+            /* ... (restante do estilo de abas) */
             cursor: pointer;
             border: none;
             background-color: transparent;
@@ -146,7 +179,6 @@
             border-bottom: 3px solid var(--primary-color);
         }
         
-        /* CONTAINER PRINCIPAL DOS LINKS */
         #links-container {
             display: flex;
             flex-wrap: wrap;
@@ -155,10 +187,9 @@
             max-width: 900px;
             width: 100%;
         }
+        
+        /* Estilos dos links e botões de exclusão mantidos do código anterior */
 
-        /* -------------------------------------- */
-        /* ESTILO DO ATALHO (3D e Ícones) */
-        /* -------------------------------------- */
         .link-item {
             display: flex;
             flex-direction: column;
@@ -171,39 +202,19 @@
             width: 110px;
             text-align: center;
             position: relative;
-            
-            box-shadow: 
-                0 4px 6px -1px var(--shadow-color), 
-                0 2px 4px -2px rgba(0, 0, 0, 0.1);
-            
+            box-shadow: 0 4px 6px -1px var(--shadow-color), 0 2px 4px -2px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .link-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 
-                0 10px 15px -3px var(--shadow-color), 
-                0 4px 6px -4px rgba(0, 0, 0, 0.15);
-        }
-
         .link-item img {
-            /* Tamanho da imagem, garantindo boa qualidade */
             width: 60px;
             height: 60px;
             object-fit: contain;
             margin-bottom: 10px;
             border-radius: 8px;
-            /* Filtro de saturação sutil para manter um padrão visual */
             filter: saturate(1.1);
         }
-
-        .link-label {
-            font-size: 0.9em;
-            font-weight: 600;
-            word-break: break-word;
-        }
         
-        /* ESTILO DO BOTÃO DE EXCLUSÃO */
         .delete-btn {
             position: absolute;
             top: 5px;
@@ -219,31 +230,28 @@
             text-align: center;
             cursor: pointer;
             opacity: 0;
-            transition: opacity 0.2s, background-color 0.2s;
             z-index: 10;
-            font-weight: bold;
         }
 
-        /* Mostra o botão ao passar o mouse */
-        .link-item:hover .delete-btn {
-            opacity: 1;
-        }
-        
-        /* Esconde o botão para links do Admin */
-        .link-item[data-type="admin"] .delete-btn {
-            display: none !important;
-        }
+        .link-item:hover .delete-btn { opacity: 1; }
+        .link-item[data-type="admin"] .delete-btn { display: none !important; }
+
     </style>
 </head>
 <body class="admin-mode-disabled">
 
     <header>
         <h1>Meus Atalhos Essenciais</h1>
-        <p>Acesse seus sites favoritos rapidamente, organizados por categoria.</p>
         
-        <button id="admin-login-btn">Acesso Admin</button>
-        <p id="admin-status"></p>
+        <div id="admin-auth-box">
+            <span id="admin-status"></span>
+            <input type="password" id="admin-password-input" placeholder="Senha">
+            <button id="admin-login-btn">Acesso Admin</button>
+            <button id="admin-auth-btn" style="display:none;">Entrar</button>
+        </div>
+    </header>
 
+    <div id="top-controls">
         <div id="user-form-container" class="link-form-container">
             <h3>Adicionar Meu Link Pessoal</h3>
             <form id="user-add-link-form" class="link-form">
@@ -263,11 +271,10 @@
                 <button type="submit">Salvar Link Padrão</button>
             </form>
         </div>
-    </header>
-
+    </div>
+    
     <div id="tab-container">
         <div id="tabs"></div>
-
         <main id="links-container"></main>
     </div>
     
@@ -278,25 +285,24 @@
         const userAddForm = document.getElementById('user-add-link-form');
         const adminAddForm = document.getElementById('admin-add-link-form');
         const adminLoginBtn = document.getElementById('admin-login-btn');
+        const adminAuthBtn = document.getElementById('admin-auth-btn');
+        const adminPasswordInput = document.getElementById('admin-password-input');
+        const adminAuthBox = document.getElementById('admin-auth-box');
         const adminStatus = document.getElementById('admin-status');
         
-        const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; // Links fixos para todos
-        const USER_LINKS_KEY = 'user_links_pessoais_v3';  // Links do usuário (só para ele)
+        const ADMIN_LINKS_KEY = 'admin_links_padrao_v3';
+        const USER_LINKS_KEY = 'user_links_pessoais_v3';
         const ADMIN_PASSWORD = 'prime.admin'; // Senha definida
         
         let activeCategory = '';
         let isAdmin = false;
 
-        // ----------------------------------------
-        // CONFIGURAÇÃO DE CATEGORIAS
-        // ----------------------------------------
         const CATEGORIES = ['Ferramentas', 'Redes Sociais', 'Meus Links'];
 
-        // 1. CARREGA LINKS (Admin e Usuário)
+        // --- Funções de Carregamento e Salvamento ---
         function loadAdminLinks() {
             const storedLinks = localStorage.getItem(ADMIN_LINKS_KEY);
             return storedLinks ? JSON.parse(storedLinks) : [
-                // Links Padrão Iniciais (se for a primeira vez que o admin usa)
                 { url: 'https://www.google.com', label: 'Google', category: 'Ferramentas', type: 'admin' },
                 { url: 'https://github.com', label: 'GitHub', category: 'Ferramentas', type: 'admin' },
             ];
@@ -304,38 +310,36 @@
 
         function loadUserLinks() {
             const storedLinks = localStorage.getItem(USER_LINKS_KEY);
-            // Todos os links do usuário são do tipo 'user'
             return storedLinks ? JSON.parse(storedLinks).map(link => ({...link, type: 'user'})) : [];
         }
 
-        // Combina e retorna todos os links para a renderização
-        function getAllLinks() {
-            return [...loadAdminLinks(), ...loadUserLinks()];
-        }
-
-        // 2. SALVA OS LINKS (APENAS o array de interesse)
         function saveAdminLinks(links) {
             localStorage.setItem(ADMIN_LINKS_KEY, JSON.stringify(links));
         }
 
         function saveUserLinks(links) {
-            // Remove o campo 'type' antes de salvar o array do usuário
             const cleanLinks = links.map(link => ({ url: link.url, label: link.label, category: link.category }));
             localStorage.setItem(USER_LINKS_KEY, JSON.stringify(cleanLinks));
         }
 
-        // 3. ATUALIZA O ESTADO DO MODO ADMIN
+        // --- Modo Admin ---
         function updateAdminMode(status) {
             isAdmin = status;
             document.body.classList.toggle('admin-mode', status);
             adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
-            adminStatus.textContent = status ? 'MODO ADMINISTRADOR ATIVO' : '';
-            adminStatus.style.color = status ? 'var(--admin-color)' : 'transparent';
+            adminStatus.textContent = status ? 'ADMIN' : '';
             adminFormContainer.classList.toggle('active', status);
-            renderLinks(activeCategory); // Redesenha para atualizar permissões
-        }
 
-        // 4. CRIA O ELEMENTO HTML DE UM ATALHO
+            // Reseta a caixa de autenticação
+            adminAuthBox.classList.remove('active');
+            adminPasswordInput.style.display = 'none';
+            adminAuthBtn.style.display = 'none';
+            adminPasswordInput.value = '';
+
+            renderLinks(activeCategory);
+        }
+        
+        // --- Geração de Elementos e Ícones ---
         function createLinkItem(linkData, index) {
             const { url, label, type } = linkData;
             
@@ -343,10 +347,10 @@
             link.href = url;
             link.target = "_blank";
             link.classList.add('link-item');
-            link.setAttribute('data-type', type); // 'admin' ou 'user'
+            link.setAttribute('data-type', type);
             
             const img = document.createElement('img');
-            // Melhoria do ícone: usando sz=256 e um serviço confiável
+            // Mantém a alta resolução (sz=256) para ícones nítidos
             const iconUrl = `https://www.google.com/s2/favicons?sz=256&domain_url=${encodeURIComponent(url)}`;
             
             img.src = iconUrl;
@@ -368,7 +372,6 @@
                     return;
                 }
                 
-                // Redireciona a exclusão para o array correto
                 if (type === 'admin') {
                     handleDeleteAdminLink(index);
                 } else if (type === 'user') {
@@ -383,9 +386,9 @@
             return link;
         }
 
-        // 5. LÓGICA DE EXCLUSÃO
+        // --- Lógica de Exclusão ---
         function handleDeleteAdminLink(indexToDelete) {
-            if (confirm("MODO ADMIN: Remover este link padrão para TODOS os usuários?")) {
+            if (confirm("MODO ADMIN: Remover link padrão para TODOS?")) {
                 let links = loadAdminLinks();
                 links.splice(indexToDelete, 1);
                 saveAdminLinks(links);
@@ -402,34 +405,32 @@
             }
         }
 
-        // 6. RENDERIZA (MOSTRA) OS LINKS DA CATEGORIA ATIVA
+        // --- Renderização ---
         function renderLinks(category) {
             activeCategory = category;
             linksContainer.innerHTML = '';
             
-            // Combina todos os links e filtra pela categoria ativa
             const adminLinks = loadAdminLinks().filter(link => link.category === category);
             const userLinks = loadUserLinks().filter(link => link.category === category);
 
-            // Renderiza links do Admin
+            // Renderiza Admin (index é o índice no array adminLinks)
             adminLinks.forEach((linkData, index) => {
                 const item = createLinkItem(linkData, index);
                 linksContainer.appendChild(item);
             });
             
-            // Renderiza links do Usuário
+            // Renderiza Usuário (index é o índice no array userLinks)
             userLinks.forEach((linkData, index) => {
                 const item = createLinkItem(linkData, index);
                 linksContainer.appendChild(item);
             });
             
-            // Atualiza os botões das abas
+            // Atualiza botões das abas
             document.querySelectorAll('.tab-button').forEach(btn => {
                 btn.classList.toggle('active', btn.textContent === category);
             });
         }
         
-        // 7. CRIA OS BOTÕES DAS ABAS E O SELETOR DO FORMULÁRIO
         function initializeCategories() {
             const adminSelect = document.getElementById('admin-category-select');
             const userSelect = document.getElementById('user-category-select');
@@ -439,90 +440,86 @@
             userSelect.innerHTML = '';
 
             CATEGORIES.forEach(category => {
-                // Botões de aba
                 const tabBtn = document.createElement('button');
                 tabBtn.textContent = category;
                 tabBtn.classList.add('tab-button');
                 tabBtn.addEventListener('click', () => renderLinks(category));
                 tabsContainer.appendChild(tabBtn);
                 
-                // Opções do Seletor Admin
                 adminSelect.insertAdjacentHTML('beforeend', `<option value="${category}">${category}</option>`);
-                // Opções do Seletor Usuário
                 userSelect.insertAdjacentHTML('beforeend', `<option value="${category}">${category}</option>`);
             });
             
             activeCategory = CATEGORIES[0];
         }
 
-        // 8. LÓGICA DE ADICIONAR NOVO LINK
-        
-        // --- Adicionar Admin (Fixo) ---
-        adminAddForm.addEventListener('submit', function(event) {
+        // --- Lógica de Adicionar Novo Link ---
+        function handleAddLink(formType, event) {
             event.preventDefault();
-            if (!isAdmin) return;
             
-            const url = document.getElementById('admin-link-input').value.trim();
-            const label = document.getElementById('admin-label-input').value.trim();
-            const categorySelected = document.getElementById('admin-category-select').value;
+            const isUser = formType === 'user';
+            const linksLoader = isUser ? loadUserLinks : loadAdminLinks;
+            const linksSaver = isUser ? saveUserLinks : saveAdminLinks;
+            const form = event.target;
+
+            if (!isUser && !isAdmin) return;
+
+            const url = form.querySelector('input[placeholder^="URL"]').value.trim();
+            const label = form.querySelector('input[placeholder^="Nome"]').value.trim();
+            const categorySelected = form.querySelector('select').value;
 
             if (url && label && categorySelected) {
                 let finalUrl = (url.startsWith('http') ? url : 'https://' + url);
                 
-                let links = loadAdminLinks();
+                let links = linksLoader();
                 if (!links.some(link => link.url === finalUrl)) {
-                    links.push({ url: finalUrl, label: label, category: categorySelected, type: 'admin' });
-                    saveAdminLinks(links);
+                    links.push({ url: finalUrl, label: label, category: categorySelected, type: formType });
+                    linksSaver(links);
                     renderLinks(categorySelected);
-                    adminAddForm.reset();
+                    form.reset();
                 } else {
-                    alert('MODO ADMIN: Este link fixo já existe!');
+                    alert(`${isUser ? 'Seu link pessoal' : 'Link fixo'} já existe!`);
                 }
             }
-        });
+        }
         
-        // --- Adicionar Usuário (Pessoal) ---
-        userAddForm.addEventListener('submit', function(event) {
-            event.preventDefault();
-            
-            const url = document.getElementById('user-link-input').value.trim();
-            const label = document.getElementById('user-label-input').value.trim();
-            const categorySelected = document.getElementById('user-category-select').value;
+        userAddForm.addEventListener('submit', (e) => handleAddLink('user', e));
+        adminAddForm.addEventListener('submit', (e) => handleAddLink('admin', e));
 
-            if (url && label && categorySelected) {
-                let finalUrl = (url.startsWith('http') ? url : 'https://' + url);
-                
-                let links = loadUserLinks();
-                if (!links.some(link => link.url === finalUrl)) {
-                    links.push({ url: finalUrl, label: label, category: categorySelected, type: 'user' });
-                    saveUserLinks(links);
-                    renderLinks(categorySelected);
-                    userAddForm.reset();
-                } else {
-                    alert('Seu link pessoal já existe!');
-                }
-            }
-        });
-
-        // 9. LÓGICA DE ACESSO ADMIN
+        // --- Lógica de Login Admin ---
         adminLoginBtn.addEventListener('click', () => {
             if (isAdmin) {
-                updateAdminMode(false);
+                updateAdminMode(false); // Sair
             } else {
-                const password = prompt("Insira a senha de administrador (prime.admin):");
-                if (password === ADMIN_PASSWORD) {
-                    updateAdminMode(true);
-                } else if (password !== null) {
-                    alert("Senha incorreta!");
-                }
+                adminAuthBox.classList.add('active');
+                adminPasswordInput.style.display = 'block';
+                adminAuthBtn.style.display = 'block';
+                adminPasswordInput.focus();
             }
         });
 
-        // 10. INICIALIZAÇÃO
+        adminAuthBtn.addEventListener('click', () => {
+            const password = adminPasswordInput.value;
+            if (password === ADMIN_PASSWORD) {
+                updateAdminMode(true);
+            } else {
+                alert("Senha incorreta!");
+                adminPasswordInput.value = '';
+                adminPasswordInput.focus();
+            }
+        });
+        
+        // Permite logar com Enter no campo de senha
+        adminPasswordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                adminAuthBtn.click();
+            }
+        });
+
+        // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
             initializeCategories();
             renderLinks(activeCategory);
-            // Garante que o modo admin está desativado ao carregar
             updateAdminMode(false);
         });
 

@@ -113,7 +113,9 @@
             justify-content: center;
             margin: 15px 0;
             gap: 10px;
-            flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
+            flex-wrap: nowrap; /* Impede a quebra de linha por padrão */
+            overflow-x: auto; /* Permite scroll horizontal se não couber */
+            padding: 5px 0;
         }
         
         #sub-tabs .sub-tab-button {
@@ -126,7 +128,8 @@
             font-weight: 500;
             transition: all 0.2s ease;
             box-shadow: 0 1px 3px var(--shadow-light);
-            margin: 4px 0; /* Espaçamento extra para quebra de linha */
+            margin: 0;
+            white-space: nowrap; /* Garante que os botões não quebrem o texto */
         }
         
         #sub-tabs .sub-tab-button:hover {
@@ -444,6 +447,18 @@
                 grid-template-columns: 1fr;
             }
             
+            /* Ajuste para Sub-Abas em Celular (para caber na mesma linha) */
+            #sub-tabs {
+                gap: 5px; /* Reduz o espaçamento */
+                justify-content: space-between;
+                flex-wrap: wrap; /* Permite quebrar se o texto for muito longo, mas tentará nowrap primeiro */
+            }
+            #sub-tabs .sub-tab-button {
+                padding: 6px 8px; /* Reduz o padding */
+                font-size: 0.85em; /* Reduz o tamanho da fonte */
+                flex-grow: 1; /* Permite que os botões se expandam um pouco */
+            }
+            
             /* Calculadora Padrão */
             #basic-calculator {
                  max-width: 95%;
@@ -489,7 +504,7 @@
         <div id="links-content" class="tab-content active">
             
             <div id="sub-tabs">
-                <button class="sub-tab-button active" data-sub-tab="Ferramentas">Ferramentas</button>
+                <button class="sub-tab-button active" data-sub-tab="Ferramentas">LINKS</button>
                 <button class="sub-tab-button" data-sub-tab="Rastreadores">Rastreadores</button>
                 <button class="sub-tab-button" data-sub-tab="basic-calc">Calculadora</button>
             </div>
@@ -622,7 +637,7 @@
         const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; 
         const USER_ORDER_KEY = 'user_links_order_v3'; // Chave para salvar a ordem customizada por usuário
         const ADMIN_PASSWORD = 'prime.admin'; 
-        // NOVO: Adicionada a categoria 'Rastreadores'
+        // CATEGORIAS INTERNAS (Deve incluir 'Ferramentas' e 'Rastreadores')
         const CATEGORIES = ['Ferramentas', 'Rastreadores']; 
         
         // ** LISTA DE LINKS PADRÃO EMBUTIDA NO HTML ** (Mantenha o seu JSON aqui)
@@ -664,7 +679,6 @@
             localStorage.setItem(ADMIN_LINKS_KEY, JSON.stringify(links));
         }
         
-        // NOVO: Funções para salvar/carregar a ordem customizada do usuário
         function loadUserOrder(category) {
             const orderMap = JSON.parse(localStorage.getItem(USER_ORDER_KEY) || '{}');
             return orderMap[category] || null;
@@ -974,7 +988,7 @@
         
         subTabsMenu.addEventListener('click', (e) => {
              if (e.target.classList.contains('sub-tab-button')) {
-                const subTabName = e.target.dataset.subTab; 
+                const subTabName = e.target.dataset.sub-tab; 
                 showSubTab(subTabName);
             }
         });
@@ -1005,7 +1019,7 @@
             }
         }
         
-        function createLinkItem(linkData, index, isCustomOrder) {
+        function createLinkItem(linkData, index) {
             const { url, label } = linkData;
             
             const link = document.createElement('a');
@@ -1015,7 +1029,7 @@
             link.setAttribute('data-url', url); // Usado para identificar o link
             link.setAttribute('data-index', index); 
             
-            // Permite Drag and Drop para TODOS os usuários, mas a exclusão só para ADMIN
+            // Permite Drag and Drop para TODOS os usuários
             link.setAttribute('draggable', 'true');
             link.addEventListener('dragstart', handleDragStart);
             link.addEventListener('dragend', handleDragEnd);
@@ -1051,7 +1065,7 @@
             return link;
         }
         
-        // --- LÓGICA DE DRAG AND DROP (AGORA PARA USUÁRIO COMUM) ---
+        // --- LÓGICA DE DRAG AND DROP (PARA USUÁRIO COMUM E ADMIN) ---
 
         function handleDragStart(e) { 
             draggedItem = e.target;

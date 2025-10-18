@@ -451,7 +451,7 @@
             #sub-tabs {
                 gap: 5px; /* Reduz o espaçamento */
                 justify-content: space-between;
-                flex-wrap: wrap; /* Permite quebrar se o texto for muito longo, mas tentará nowrap primeiro */
+                flex-wrap: nowrap; /* Tenta manter na mesma linha */
             }
             #sub-tabs .sub-tab-button {
                 padding: 6px 8px; /* Reduz o padding */
@@ -945,6 +945,7 @@
             if (tabName === 'links') {
                 // Ao mudar para a aba links, verifica qual sub-aba estava ativa ou define a primeira
                 const activeSubTabButton = document.querySelector('#sub-tabs .sub-tab-button.active');
+                // Mantém a categoria ativa ou define "Ferramentas" (que é a categoria interna do sub-tab LINKS)
                 const defaultSubTab = activeSubTabButton ? activeSubTabButton.dataset.subTab : 'Ferramentas';
                 
                 showSubTab(defaultSubTab);
@@ -959,7 +960,7 @@
                 button.classList.remove('active');
             });
 
-            const targetSubContent = document.getElementById('links-only-sub-content'); // O container de links
+            const targetSubContent = document.getElementById('links-only-sub-content'); 
             const targetSubButton = document.querySelector(`#sub-tabs .sub-tab-button[data-sub-tab="${subTabName}"]`);
 
             if (targetSubButton) {
@@ -971,7 +972,7 @@
                     linksContainer.innerHTML = '';
                     clear(); 
                 } else {
-                    // Se for uma categoria de links, renderiza os links
+                    // Se for uma categoria de links (Ferramentas ou Rastreadores), renderiza os links
                     targetSubContent.classList.add('active');
                     document.getElementById('basic-calc-sub-content').classList.remove('active');
                     renderLinks(subTabName);
@@ -986,9 +987,10 @@
             }
         });
         
+        // CORREÇÃO: Uso de 'subTab' em camelCase para acessar data-sub-tab
         subTabsMenu.addEventListener('click', (e) => {
              if (e.target.classList.contains('sub-tab-button')) {
-                const subTabName = e.target.dataset.sub-tab; 
+                const subTabName = e.target.dataset.subTab; 
                 showSubTab(subTabName);
             }
         });
@@ -1341,7 +1343,7 @@
             clear(); 
             initializeCategories();
             
-            // Define a sub-aba padrão 'Ferramentas' (agora com o nome da categoria)
+            // Define a sub-aba padrão 'Ferramentas' (a categoria interna do sub-tab LINKS)
             showSubTab('Ferramentas'); 
             
             // Define a aba principal padrão 'links'

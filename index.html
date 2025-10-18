@@ -9,18 +9,23 @@
     
     <style>
         /* -------------------------------------- */
-        /* CSS: ESTILO GERAL E CORES METÁLICAS */
+        /* CSS: ESTILO GERAL E CORES PADRÃO */
         /* -------------------------------------- */
         :root {
-            /* Cores Metálicas/Sóbrias */
-            --primary-color: #3f51b5; /* Azul Escuro Sutil */
-            --background-color: #e6e6e6; /* Cinza Claro Suave */
-            --card-bg: #ffffff;
+            /* Cores Azuis e Cinzas (Minimalista) */
+            --primary-color: #3f51b5; /* Azul Escuro Sutil (Contraste principal) */
+            --primary-hover: #303f9f;
+            --background-color: #f0f0f5; /* Cinza Claro Suave para o corpo */
+            --card-bg: #ffffff; /* Fundo de cartões/contêineres */
             --shadow-light: rgba(0, 0, 0, 0.1);
             --shadow-dark: rgba(0, 0, 0, 0.2);
-            --delete-color: #d32f2f;
-            --admin-color: #ffb300;
-            --success-color: #43a047;
+            
+            /* Cores de Destaque */
+            --delete-color: #d32f2f; /* Vermelho para deletar */
+            --admin-color: #ffb300; /* Amarelo/Laranja para Admin/Atenção */
+            --success-color: #43a047; /* Verde para Sucesso/Gerar */
+            --operator-color: #ff9800; /* Laranja para Operadores da Calculadora */
+            
             --spacing-unit: 10px;
         }
 
@@ -56,7 +61,7 @@
         }
 
         /* -------------------------------------- */
-        /* CONTROLES DE ABAS (TABS) */
+        /* CONTROLES DE ABAS (TABS) - PADRÃO APLICADO */
         /* -------------------------------------- */
         #tab-container {
             width: 100%;
@@ -68,9 +73,11 @@
             display: flex;
             justify-content: space-around; 
             border-bottom: 2px solid #ccc;
-            margin-bottom: 15px;
             flex-wrap: nowrap; 
             box-shadow: 0 2px 4px var(--shadow-light);
+            background-color: var(--card-bg); /* Fundo para as abas */
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
         }
 
         .tab-button {
@@ -78,7 +85,7 @@
             padding: 12px 5px; 
             cursor: pointer;
             font-size: 1em;
-            background: #f8f8f8;
+            background: transparent; /* Fundo transparente para coesão */
             border: none;
             border-bottom: 3px solid transparent;
             font-weight: 600;
@@ -86,22 +93,21 @@
             transition: all 0.3s ease; 
             white-space: nowrap; 
             text-align: center;
-            border-radius: 4px 4px 0 0;
-            margin: 0 1px;
+            margin: 0;
         }
 
         .tab-button:hover {
-             background-color: #efefef;
+             background-color: var(--background-color);
+             color: var(--primary-color);
         }
 
         .tab-button.active {
             border-bottom-color: var(--primary-color);
             color: var(--primary-color);
-            background-color: var(--card-bg);
-            box-shadow: 0 -2px 5px var(--shadow-light);
+            background-color: var(--background-color);
         }
         
-        /* Sub-Abas */
+        /* Sub-Abas - PADRÃO APLICADO */
         #sub-tabs {
             display: flex;
             justify-content: center;
@@ -111,24 +117,25 @@
         
         #sub-tabs .sub-tab-button {
             padding: 8px 15px;
-            background-color: #dcdde1; 
+            background-color: var(--card-bg); 
             border: 1px solid #c8c8c8;
             border-radius: 6px;
             font-size: 0.9em;
             cursor: pointer;
             font-weight: 500;
             transition: all 0.2s ease;
+            box-shadow: 0 1px 3px var(--shadow-light);
         }
         
         #sub-tabs .sub-tab-button:hover {
-            background-color: #c8c8c8;
+            background-color: var(--background-color);
         }
 
         #sub-tabs .sub-tab-button.active {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
-            box-shadow: 0 2px 4px var(--shadow-light);
+            box-shadow: 0 2px 4px var(--shadow-dark);
         }
 
         .sub-tab-content {
@@ -152,7 +159,7 @@
         }
         
         /* -------------------------------------- */
-        /* LINKS COMO BOTÕES (RESPONSIVO) */
+        /* LINKS COMO BOTÕES (PADRÃO APLICADO) */
         /* -------------------------------------- */
         
         #links-grid {
@@ -165,6 +172,7 @@
         }
         
         .link-item {
+            /* Mantém o estilo limpo e clicável */
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -172,9 +180,9 @@
             color: #333;
             padding: 12px 15px;
             border-radius: 8px;
-            background-color: #f1f1f1; 
+            background-color: var(--card-bg); 
             border: 1px solid #d4d4d4;
-            box-shadow: 0 1px 3px var(--shadow-light);
+            box-shadow: 0 2px 5px var(--shadow-light);
             transition: all 0.2s ease;
             cursor: pointer;
             overflow: hidden;
@@ -182,7 +190,7 @@
         }
         
         .link-item:hover {
-            background-color: #e6e6e6;
+            background-color: var(--background-color);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px var(--shadow-dark);
         }
@@ -196,17 +204,8 @@
             padding-right: 10px;
         }
         
-        /* Botão X de Delete no Admin */
-        .delete-btn {
-            background-color: var(--delete-color);
-            color: white;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .link-item:hover .delete-btn { opacity: 1; }
-        
         /* -------------------------------------- */
-        /* LAYOUT ADMIN & FORMULÁRIOS */
+        /* FORMULÁRIOS E INPUTS (PADRÃO APLICADO) */
         /* -------------------------------------- */
         
         .link-form-container {
@@ -217,14 +216,16 @@
             margin-bottom: 15px;
         }
 
-        /* Aplicação visual para todos os inputs e selects */
         input[type="text"], input[type="number"], input[type="password"], select, textarea, .link-form button {
+            /* Estilo Padrão para TODOS os Inputs */
             padding: 10px;
             border: 1px solid #dcdde1;
             border-radius: 6px;
             box-sizing: border-box;
             font-size: 1em;
             transition: border-color 0.2s, box-shadow 0.2s;
+            width: 100%; /* Garante que ocupam todo o espaço disponível */
+            margin-bottom: 8px; /* Espaçamento padrão */
         }
 
         input:focus, select:focus, textarea:focus {
@@ -234,10 +235,13 @@
         }
 
         .link-form button, #generator-btn, #admin-login-btn, #admin-auth-btn {
+            /* Estilo Padrão para TODOS os Botões */
             cursor: pointer;
             font-weight: 600;
             color: white;
             border: none;
+            padding: 10px;
+            border-radius: 6px;
             transition: background-color 0.2s, transform 0.1s;
         }
         
@@ -246,66 +250,64 @@
         }
 
         .link-form button[type="submit"]:hover {
-            background-color: #303f9f;
-        }
-        
-        #generator-btn {
-            background-color: var(--success-color);
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        /* Login Admin */
-        #admin-auth-box {
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        #admin-auth-box .flex-controls {
-            display: flex;
-            gap: 8px;
-            flex-wrap: nowrap;
-        }
-
-        #admin-login-btn, #admin-auth-btn {
-             background-color: var(--admin-color);
-             color: #333;
-             font-weight: 700;
-        }
-
-        #admin-auth-box.active input[type="password"] {
-            display: block;
+            background-color: var(--primary-hover);
         }
 
         /* -------------------------------------- */
-        /* CALCULADORAS (CUSTO E PADRÃO) */
+        /* CALCULADORA PADRÃO (VISUAL ARRUMADO) */
         /* -------------------------------------- */
-
-        #calculator-diesel-container { 
-            max-width: 450px;
-            margin: 0 auto;
-        }
 
         #basic-calculator {
             max-width: 300px;
             margin: 15px auto;
+            background-color: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 6px 15px var(--shadow-dark);
+            padding: 15px;
         }
 
-        /* Calculadora Padrão Botões */
+        #calc-display {
+            background-color: #e0e0e0; /* Fundo levemente cinza no visor */
+            color: #1a1a1a;
+            font-size: 2.5em;
+            padding: 20px 10px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            text-align: right;
+            overflow-x: auto;
+            font-weight: 300;
+        }
+        
+        #calc-buttons {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px; /* Espaçamento entre os botões */
+        }
+
         #calc-buttons button {
-            padding: 18px 0; /* Mais fácil de clicar no celular */
+            padding: 18px 0; 
             font-size: 1.2em;
-            background-color: #f1f1f1;
-            border: 1px solid #e0e0e0;
-            box-shadow: 0 1px 2px var(--shadow-light);
+            background-color: #f8f8f8;
+            border: none;
+            border-radius: 50%; /* Botões Circulares */
+            box-shadow: 0 2px 5px var(--shadow-light);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        #calc-buttons button:hover {
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
         
         #calc-buttons button:active {
-            transform: scale(0.98);
+            transform: scale(0.95);
         }
 
+        /* Cores Específicas da Calculadora */
         .operator {
-            background-color: #ff9800 !important; /* Laranja Metálico */
+            background-color: var(--operator-color) !important; 
             color: white;
         }
         .operator:hover {
@@ -313,25 +315,94 @@
         }
         
         .clear-btn, .sign-btn, .percent-btn {
-            background-color: #ccc !important;
+            background-color: #c8c8c8 !important; /* Cinza claro para funções */
             color: #333;
         }
+        .clear-btn:hover, .sign-btn:hover, .percent-btn:hover {
+             background-color: #b0b0b0 !important;
+        }
+        
         .equals-btn {
-            background-color: var(--primary-color) !important;
+            background-color: var(--primary-color) !important; 
             color: white;
         }
         .equals-btn:hover {
-            background-color: #303f9f !important;
+            background-color: var(--primary-hover) !important;
+        }
+        
+        /* Botão 0 ocupando duas colunas */
+        #calc-buttons button[style*="grid-column: span 2;"] {
+            border-radius: 30px; /* Arredondamento para o botão estendido */
+        }
+        
+        /* -------------------------------------- */
+        /* CALCULADORA CUSTO (PADRÃO APLICADO) */
+        /* -------------------------------------- */
+
+        #calculator-diesel-container { 
+            max-width: 450px;
+            margin: 0 auto;
+        }
+        
+        .calc-input-group label {
+            display: block;
+            margin-bottom: 4px;
+            font-weight: 500;
+            color: #555;
+            font-size: 0.95em;
         }
 
+        #calc-result-box {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: var(--background-color);
+            border-radius: 8px;
+            border: 1px dashed #ccc;
+        }
+
+        #calc-result-box h4 {
+            color: var(--primary-color);
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 1px solid var(--primary-color);
+            padding-bottom: 5px;
+        }
+
+        .result-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+        
+        .result-item {
+            background-color: var(--card-bg);
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            box-shadow: 0 1px 4px var(--shadow-light);
+        }
+
+        .result-value {
+            display: block;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #1a1a1a;
+        }
+
+        .result-label {
+            display: block;
+            font-size: 0.8em;
+            color: #777;
+            margin-top: 3px;
+        }
+
+
         /* -------------------------------------- */
-        /* MEDIA QUERIES (RESPONSIVIDADE CELULAR) */
+        /* MEDIA QUERIES (RESPONSIVIDADE) */
         /* -------------------------------------- */
         @media (max-width: 600px) {
             
-            #tabs-menu {
-                box-shadow: none; 
-            }
             .tab-button {
                 padding: 10px 5px;
                 font-size: 0.9em;
@@ -341,30 +412,19 @@
                 grid-template-columns: 1fr;
             }
             
-            /* Admin Login: Empilhamento */
-            #admin-auth-box {
-                flex-direction: column;
-                align-items: stretch;
-            }
-            #admin-auth-box > button, #admin-auth-box > span {
-                 margin-bottom: 5px;
-            }
-            #admin-auth-box .flex-controls {
-                 flex-wrap: wrap; 
-                 width: 100%;
-            }
-            
-            /* Formulário Admin (Empilhamento) */
-            .link-form {
-                grid-template-columns: 1fr; 
-                gap: 8px;
-            }
-            
             /* Calculadora Padrão */
             #basic-calculator {
                  max-width: 95%;
             }
-
+             #calc-buttons button {
+                padding: 14px 0;
+                font-size: 1.1em;
+                border-radius: 8px; /* No celular, botões quadrados são mais fáceis */
+            }
+            #calc-buttons button[style*="grid-column: span 2;"] {
+                border-radius: 8px; 
+            }
+            
             /* Calculadora Custo */
             #calculator-diesel-container {
                  max-width: 95%;
@@ -372,14 +432,9 @@
             .result-grid {
                 grid-template-columns: 1fr; 
             }
-
-            #calc-buttons button {
-                padding: 14px 0;
-                font-size: 1.1em;
-            }
         }
         
-        /* Animação Básica de Transição */
+        /* Animação Padrão */
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
@@ -430,7 +485,7 @@
                         <button>3</button>
                         <button class="operator">+</button>
                         
-                        <button class style="grid-column: span 2;">0</button>
+                        <button style="grid-column: span 2;">0</button>
                         <button>.</button>
                         <button class="equals-btn">=</button>
                     </div>
@@ -575,7 +630,7 @@
         }
 
         // ----------------------------------------
-        // 2. LÓGICA DA CALCULADORA PADRÃO (BÁSICA) - MELHORADA
+        // 2. LÓGICA DA CALCULADORA PADRÃO (BÁSICA) 
         // ----------------------------------------
         const display = document.getElementById('calc-display');
         const buttons = document.getElementById('calc-buttons');
@@ -585,8 +640,8 @@
         let waitingForSecondOperand = false;
 
         function updateDisplay() {
-            // Limita a exibição para que não transborde
-            display.textContent = currentInput.length > 10 ? parseFloat(currentInput).toExponential(5) : currentInput;
+            // Limita a exibição
+            display.textContent = currentInput.length > 10 && !waitingForSecondOperand ? parseFloat(currentInput).toExponential(5) : currentInput;
         }
 
         function clear() {
@@ -598,7 +653,7 @@
         }
 
         function inputDigit(digit) {
-            if (currentInput.length > 10 && !waitingForSecondOperand) return; // Limita a entrada de dígitos
+            if (currentInput.length > 10 && !waitingForSecondOperand) return;
             
             if (waitingForSecondOperand) {
                 currentInput = digit;
@@ -677,12 +732,10 @@
         function handlePercentage() {
             const current = parseFloat(currentInput);
             if (operator && previousInput !== null) {
-                // Se há uma operação pendente, calcula a porcentagem do previousInput
                 const prev = parseFloat(previousInput);
                 const result = (prev * current) / 100;
                 currentInput = String(result);
             } else {
-                // Caso contrário, divide o número atual por 100
                 currentInput = String(current / 100);
             }
             waitingForSecondOperand = true;
@@ -739,7 +792,7 @@
 
 
         // ----------------------------------------
-        // 3. LÓGICA DA CALCULADORA DE CUSTO (DIESEL) - INALTERADA
+        // 3. LÓGICA DA CALCULADORA DE CUSTO (DIESEL) 
         // ----------------------------------------
         
         const kmTotalInput = document.getElementById('km-total');
@@ -800,7 +853,7 @@
 
 
         // ----------------------------------------
-        // 4. LÓGICA DE ABAS (PRINCIPAIS E SUB) - CORRIGIDA
+        // 4. LÓGICA DE ABAS (PRINCIPAIS E SUB)
         // ----------------------------------------
         
         function showMainTab(tabName) {
@@ -821,7 +874,6 @@
                 calculateDieselConsumption(); 
             }
             if (tabName === 'links') {
-                // Garante que a primeira sub-aba ativa seja mostrada
                 const activeSubTab = document.querySelector('#sub-tabs .sub-tab-button.active');
                 if (activeSubTab) {
                     showSubTab(activeSubTab.dataset.subTab);
@@ -859,14 +911,14 @@
         
         subTabsMenu.addEventListener('click', (e) => {
              if (e.target.classList.contains('sub-tab-button')) {
-                const subTabName = e.target.dataset.subTab;
+                const subTabName = e.target.dataset.sub-tab;
                 showSubTab(subTabName);
             }
         });
 
 
         // ----------------------------------------
-        // 5. LÓGICA DE DRAG AND DROP E ADMIN - INALTERADA
+        // 5. LÓGICA DE DRAG AND DROP E ADMIN 
         // ----------------------------------------
 
         function updateAdminMode(status) {
@@ -1082,7 +1134,7 @@
         
 
         // ----------------------------------------
-        // 6. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN) - INALTERADA
+        // 6. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
         // ----------------------------------------
 
         function handleAddLink(event) { 

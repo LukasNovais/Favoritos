@@ -46,6 +46,15 @@
             min-height: 10px;
         }
         
+        h2 {
+            font-size: 1.4em;
+            color: #444;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
         /* -------------------------------------- */
         /* CONTROLES DE ABAS (TABS) */
         /* -------------------------------------- */
@@ -57,16 +66,16 @@
 
         #tabs-menu {
             display: flex;
-            justify-content: space-around; /* Distribui bem as 3 abas */
+            justify-content: space-around; 
             border-bottom: 2px solid #ccc;
             margin-bottom: 15px;
-            flex-wrap: nowrap; /* Evita quebra de linha em telas pequenas */
+            flex-wrap: nowrap; 
             box-shadow: 0 2px 4px var(--shadow-light);
         }
 
         .tab-button {
-            flex-grow: 1; /* Distribui o espaço uniformemente */
-            padding: 12px 5px; /* Mais padding para melhor toque */
+            flex-grow: 1; 
+            padding: 12px 5px; 
             cursor: pointer;
             font-size: 1em;
             background: #f8f8f8;
@@ -74,7 +83,7 @@
             border-bottom: 3px solid transparent;
             font-weight: 600;
             color: #666;
-            transition: all 0.3s ease; /* Animação para o menu */
+            transition: all 0.3s ease; 
             white-space: nowrap; 
             text-align: center;
             border-radius: 4px 4px 0 0;
@@ -102,7 +111,7 @@
         
         #sub-tabs .sub-tab-button {
             padding: 8px 15px;
-            background-color: #dcdde1; /* Cinza Metalizado */
+            background-color: #dcdde1; 
             border: 1px solid #c8c8c8;
             border-radius: 6px;
             font-size: 0.9em;
@@ -148,7 +157,7 @@
         
         #links-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Colunas maiores e responsivas */
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); 
             gap: 12px;
             max-width: 900px;
             width: 100%;
@@ -163,7 +172,7 @@
             color: #333;
             padding: 12px 15px;
             border-radius: 8px;
-            background-color: #f1f1f1; /* Fundo mais claro para destaque */
+            background-color: #f1f1f1; 
             border: 1px solid #d4d4d4;
             box-shadow: 0 1px 3px var(--shadow-light);
             transition: all 0.2s ease;
@@ -197,13 +206,59 @@
         .link-item:hover .delete-btn { opacity: 1; }
         
         /* -------------------------------------- */
-        /* LAYOUT ADMIN */
+        /* LAYOUT ADMIN & FORMULÁRIOS */
         /* -------------------------------------- */
         
+        .link-form-container {
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 10px var(--shadow-light);
+            margin-bottom: 15px;
+        }
+
+        /* Aplicação visual para todos os inputs e selects */
+        input[type="text"], input[type="number"], input[type="password"], select, textarea, .link-form button {
+            padding: 10px;
+            border: 1px solid #dcdde1;
+            border-radius: 6px;
+            box-sizing: border-box;
+            font-size: 1em;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(63, 81, 181, 0.2);
+            outline: none;
+        }
+
+        .link-form button, #generator-btn, #admin-login-btn, #admin-auth-btn {
+            cursor: pointer;
+            font-weight: 600;
+            color: white;
+            border: none;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        
+        .link-form button[type="submit"] {
+            background-color: var(--primary-color);
+        }
+
+        .link-form button[type="submit"]:hover {
+            background-color: #303f9f;
+        }
+        
+        #generator-btn {
+            background-color: var(--success-color);
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        /* Login Admin */
         #admin-auth-box {
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
-            margin-bottom: 20px;
         }
         
         #admin-auth-box .flex-controls {
@@ -211,35 +266,62 @@
             gap: 8px;
             flex-wrap: nowrap;
         }
-        
-        #admin-auth-box.active .flex-controls {
-            width: 100%;
+
+        #admin-login-btn, #admin-auth-btn {
+             background-color: var(--admin-color);
+             color: #333;
+             font-weight: 700;
         }
 
-        #admin-auth-box input[type="password"] {
-            flex-grow: 1;
-            min-width: 120px;
+        #admin-auth-box.active input[type="password"] {
+            display: block;
         }
 
         /* -------------------------------------- */
         /* CALCULADORAS (CUSTO E PADRÃO) */
         /* -------------------------------------- */
 
-        #calculator-diesel-container, #basic-calculator {
-            background-color: var(--card-bg);
-            box-shadow: 0 4px 10px var(--shadow-light);
+        #calculator-diesel-container { 
+            max-width: 450px;
+            margin: 0 auto;
+        }
+
+        #basic-calculator {
+            max-width: 300px;
+            margin: 15px auto;
         }
 
         /* Calculadora Padrão Botões */
         #calc-buttons button {
+            padding: 18px 0; /* Mais fácil de clicar no celular */
+            font-size: 1.2em;
             background-color: #f1f1f1;
+            border: 1px solid #e0e0e0;
             box-shadow: 0 1px 2px var(--shadow-light);
         }
+        
+        #calc-buttons button:active {
+            transform: scale(0.98);
+        }
+
         .operator {
             background-color: #ff9800 !important; /* Laranja Metálico */
+            color: white;
+        }
+        .operator:hover {
+            background-color: #e08e00 !important;
+        }
+        
+        .clear-btn, .sign-btn, .percent-btn {
+            background-color: #ccc !important;
+            color: #333;
         }
         .equals-btn {
             background-color: var(--primary-color) !important;
+            color: white;
+        }
+        .equals-btn:hover {
+            background-color: #303f9f !important;
         }
 
         /* -------------------------------------- */
@@ -248,20 +330,15 @@
         @media (max-width: 600px) {
             
             #tabs-menu {
-                box-shadow: none; /* Remove a sombra em telas pequenas para economizar espaço */
+                box-shadow: none; 
             }
             .tab-button {
                 padding: 10px 5px;
                 font-size: 0.9em;
             }
             
-            /* Links em coluna única no celular */
             #links-grid {
                 grid-template-columns: 1fr;
-            }
-            
-            .link-item {
-                padding: 14px 15px;
             }
             
             /* Admin Login: Empilhamento */
@@ -269,10 +346,11 @@
                 flex-direction: column;
                 align-items: stretch;
             }
+            #admin-auth-box > button, #admin-auth-box > span {
+                 margin-bottom: 5px;
+            }
             #admin-auth-box .flex-controls {
                  flex-wrap: wrap; 
-            }
-            #admin-auth-box input[type="password"] {
                  width: 100%;
             }
             
@@ -292,7 +370,12 @@
                  max-width: 95%;
             }
             .result-grid {
-                grid-template-columns: 1fr; /* Empilha resultados no celular */
+                grid-template-columns: 1fr; 
+            }
+
+            #calc-buttons button {
+                padding: 14px 0;
+                font-size: 1.1em;
             }
         }
         
@@ -301,14 +384,6 @@
             from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        .tab-content.active, .sub-tab-content.active {
-            animation: fadeIn 0.3s ease-out;
-        }
-
-        /* Classes de drag and drop... mantidas do código anterior */
-        .link-item.dragging { opacity: 0.3; transform: scale(0.98); }
-        .link-item.drop-target-above { border-top: 2px solid var(--primary-color); padding-top: 6px; }
-        .link-item.drop-target-below { border-bottom: 2px solid var(--primary-color); padding-bottom: 6px; }
     </style>
 </head>
 <body class="admin-mode-disabled">
@@ -336,26 +411,28 @@
                     <div id="calc-display">0</div>
                     <div id="calc-buttons">
                         <button class="clear-btn">C</button>
+                        <button class="sign-btn">±</button>
+                        <button class="percent-btn">%</button>
                         <button class="operator">/</button>
-                        <button class="operator">*</button>
-                        <button class="operator">-</button>
                         
                         <button>7</button>
                         <button>8</button>
                         <button>9</button>
-                        <button class="operator">+</button>
+                        <button class="operator">*</button>
                         
                         <button>4</button>
                         <button>5</button>
                         <button>6</button>
-                        <button>1</button>
+                        <button class="operator">-</button>
                         
+                        <button>1</button>
                         <button>2</button>
                         <button>3</button>
-                        <button class="equals-btn">=</button>
+                        <button class="operator">+</button>
                         
-                        <button>0</button>
+                        <button class style="grid-column: span 2;">0</button>
                         <button>.</button>
+                        <button class="equals-btn">=</button>
                     </div>
                 </div>
             </div>
@@ -367,7 +444,7 @@
         </div>
 
         <div id="calculator-content" class="tab-content">
-            <div id="calculator-diesel-container">
+            <div id="calculator-diesel-container" class="link-form-container">
                 <h2>Cálculo de Consumo e Frete</h2>
     
                 <div class="calc-input-group">
@@ -498,7 +575,7 @@
         }
 
         // ----------------------------------------
-        // 2. LÓGICA DA CALCULADORA PADRÃO (BÁSICA)
+        // 2. LÓGICA DA CALCULADORA PADRÃO (BÁSICA) - MELHORADA
         // ----------------------------------------
         const display = document.getElementById('calc-display');
         const buttons = document.getElementById('calc-buttons');
@@ -508,7 +585,8 @@
         let waitingForSecondOperand = false;
 
         function updateDisplay() {
-            display.textContent = currentInput;
+            // Limita a exibição para que não transborde
+            display.textContent = currentInput.length > 10 ? parseFloat(currentInput).toExponential(5) : currentInput;
         }
 
         function clear() {
@@ -520,6 +598,8 @@
         }
 
         function inputDigit(digit) {
+            if (currentInput.length > 10 && !waitingForSecondOperand) return; // Limita a entrada de dígitos
+            
             if (waitingForSecondOperand) {
                 currentInput = digit;
                 waitingForSecondOperand = false;
@@ -530,6 +610,12 @@
         }
 
         function inputDecimal() {
+            if (waitingForSecondOperand) {
+                currentInput = '0.';
+                waitingForSecondOperand = false;
+                updateDisplay();
+                return;
+            }
             if (!currentInput.includes('.')) {
                 currentInput += '.';
             }
@@ -539,17 +625,20 @@
         function performCalculation() {
             const prev = parseFloat(previousInput);
             const current = parseFloat(currentInput);
+            if (isNaN(prev) || isNaN(current)) return current;
             
+            let result;
             if (operator === '+') {
-                return prev + current;
+                result = prev + current;
             } else if (operator === '-') {
-                return prev - current;
+                result = prev - current;
             } else if (operator === '*') {
-                return prev * current;
+                result = prev * current;
             } else if (operator === '/') {
-                return prev / current;
+                if (current === 0) return 'Erro';
+                result = prev / current;
             }
-            return current;
+            return String(result);
         }
 
         function handleOperator(nextOperator) {
@@ -564,12 +653,39 @@
                 previousInput = currentInput;
             } else if (operator) {
                 const result = performCalculation();
-                currentInput = String(result).slice(0, 10); 
+                if (result === 'Erro') {
+                    currentInput = 'Erro';
+                    previousInput = null;
+                    operator = null;
+                    updateDisplay();
+                    return;
+                }
+                currentInput = result;
                 previousInput = currentInput;
             }
             
             waitingForSecondOperand = true;
             operator = nextOperator;
+            updateDisplay();
+        }
+        
+        function handleSignChange() {
+            currentInput = String(parseFloat(currentInput) * -1);
+            updateDisplay();
+        }
+
+        function handlePercentage() {
+            const current = parseFloat(currentInput);
+            if (operator && previousInput !== null) {
+                // Se há uma operação pendente, calcula a porcentagem do previousInput
+                const prev = parseFloat(previousInput);
+                const result = (prev * current) / 100;
+                currentInput = String(result);
+            } else {
+                // Caso contrário, divide o número atual por 100
+                currentInput = String(current / 100);
+            }
+            waitingForSecondOperand = true;
             updateDisplay();
         }
 
@@ -587,10 +703,24 @@
                 return;
             }
             
+            if (target.classList.contains('sign-btn')) {
+                handleSignChange();
+                return;
+            }
+
+            if (target.classList.contains('percent-btn')) {
+                handlePercentage();
+                return;
+            }
+            
             if (target.classList.contains('equals-btn')) {
                 if (operator) {
                     const result = performCalculation();
-                    currentInput = String(result).slice(0, 10);
+                    if (result === 'Erro') {
+                         currentInput = 'Erro';
+                    } else {
+                        currentInput = result;
+                    }
                     operator = null;
                     previousInput = null;
                     waitingForSecondOperand = false;
@@ -609,7 +739,7 @@
 
 
         // ----------------------------------------
-        // 3. LÓGICA DA CALCULADORA DE CUSTO (DIESEL)
+        // 3. LÓGICA DA CALCULADORA DE CUSTO (DIESEL) - INALTERADA
         // ----------------------------------------
         
         const kmTotalInput = document.getElementById('km-total');
@@ -670,7 +800,7 @@
 
 
         // ----------------------------------------
-        // 4. LÓGICA DE ABAS (PRINCIPAIS E SUB)
+        // 4. LÓGICA DE ABAS (PRINCIPAIS E SUB) - CORRIGIDA
         // ----------------------------------------
         
         function showMainTab(tabName) {
@@ -681,15 +811,21 @@
                 button.classList.remove('active');
             });
 
-            document.querySelector(`#${tabName}-content`).classList.add('active');
-            document.querySelector(`#tabs-menu .tab-button[data-tab="${tabName}"]`).classList.add('active');
+            const targetContent = document.querySelector(`#${tabName}-content`);
+            if (targetContent) {
+                targetContent.classList.add('active');
+                document.querySelector(`#tabs-menu .tab-button[data-tab="${tabName}"]`).classList.add('active');
+            }
 
             if (tabName === 'calculator') {
                 calculateDieselConsumption(); 
             }
             if (tabName === 'links') {
-                const activeSubTab = document.querySelector('#sub-tabs .sub-tab-button.active').dataset.subTab;
-                showSubTab(activeSubTab);
+                // Garante que a primeira sub-aba ativa seja mostrada
+                const activeSubTab = document.querySelector('#sub-tabs .sub-tab-button.active');
+                if (activeSubTab) {
+                    showSubTab(activeSubTab.dataset.subTab);
+                }
             }
         }
         
@@ -701,8 +837,13 @@
                 button.classList.remove('active');
             });
 
-            document.getElementById(`${subTabName}-sub-content`).classList.add('active');
-            document.querySelector(`#sub-tabs .sub-tab-button[data-sub-tab="${subTabName}"]`).classList.add('active');
+            const targetSubContent = document.getElementById(`${subTabName}-sub-content`);
+            const targetSubButton = document.querySelector(`#sub-tabs .sub-tab-button[data-sub-tab="${subTabName}"]`);
+
+            if (targetSubContent && targetSubButton) {
+                targetSubContent.classList.add('active');
+                targetSubButton.classList.add('active');
+            }
 
             if (subTabName === 'basic-calc') {
                 clear(); 
@@ -718,14 +859,14 @@
         
         subTabsMenu.addEventListener('click', (e) => {
              if (e.target.classList.contains('sub-tab-button')) {
-                const subTabName = e.target.dataset.sub-tab;
+                const subTabName = e.target.dataset.subTab;
                 showSubTab(subTabName);
             }
         });
 
 
         // ----------------------------------------
-        // 5. LÓGICA DE DRAG AND DROP E ADMIN
+        // 5. LÓGICA DE DRAG AND DROP E ADMIN - INALTERADA
         // ----------------------------------------
 
         function updateAdminMode(status) {
@@ -941,7 +1082,7 @@
         
 
         // ----------------------------------------
-        // 6. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
+        // 6. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN) - INALTERADA
         // ----------------------------------------
 
         function handleAddLink(event) { 

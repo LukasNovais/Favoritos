@@ -630,7 +630,7 @@
         }
 
         // ----------------------------------------
-        // 2. LÓGICA DA CALCULADORA PADRÃO (BÁSICA) 
+        // 2. LÓGICA DA CALCULADORA PADRÃO (BÁSICA) - CORRIGIDA
         // ----------------------------------------
         const display = document.getElementById('calc-display');
         const buttons = document.getElementById('calc-buttons');
@@ -638,6 +638,7 @@
         let operator = null;
         let previousInput = null;
         let waitingForSecondOperand = false;
+        let lastResultCalculated = false; // Novo estado para resetar após o '='
 
         function updateDisplay() {
             // Limita a exibição
@@ -649,15 +650,17 @@
             operator = null;
             previousInput = null;
             waitingForSecondOperand = false;
+            lastResultCalculated = false;
             updateDisplay();
         }
 
         function inputDigit(digit) {
-            if (currentInput.length > 10 && !waitingForSecondOperand) return;
+            if (currentInput.length > 10 && !waitingForSecondOperand && !lastResultCalculated) return;
             
-            if (waitingForSecondOperand) {
+            if (waitingForSecondOperand || lastResultCalculated) {
                 currentInput = digit;
                 waitingForSecondOperand = false;
+                lastResultCalculated = false;
             } else {
                 currentInput = currentInput === '0' ? digit : currentInput + digit;
             }
@@ -665,9 +668,10 @@
         }
 
         function inputDecimal() {
-            if (waitingForSecondOperand) {
+            if (waitingForSecondOperand || lastResultCalculated) {
                 currentInput = '0.';
                 waitingForSecondOperand = false;
+                lastResultCalculated = false;
                 updateDisplay();
                 return;
             }
@@ -701,10 +705,11 @@
 
             if (operator && waitingForSecondOperand) {
                 operator = nextOperator;
+                lastResultCalculated = false;
                 return;
             }
 
-            if (previousInput === null) {
+            if (previousInput === null || lastResultCalculated) {
                 previousInput = currentInput;
             } else if (operator) {
                 const result = performCalculation();
@@ -712,6 +717,7 @@
                     currentInput = 'Erro';
                     previousInput = null;
                     operator = null;
+                    lastResultCalculated = true;
                     updateDisplay();
                     return;
                 }
@@ -721,6 +727,7 @@
             
             waitingForSecondOperand = true;
             operator = nextOperator;
+            lastResultCalculated = false;
             updateDisplay();
         }
         
@@ -738,7 +745,8 @@
             } else {
                 currentInput = String(current / 100);
             }
-            waitingForSecondOperand = true;
+            waitingForSecondOperand = false;
+            lastResultCalculated = false;
             updateDisplay();
         }
 
@@ -767,7 +775,7 @@
             }
             
             if (target.classList.contains('equals-btn')) {
-                if (operator) {
+                if (operator && previousInput !== null) {
                     const result = performCalculation();
                     if (result === 'Erro') {
                          currentInput = 'Erro';
@@ -775,8 +783,9 @@
                         currentInput = result;
                     }
                     operator = null;
-                    previousInput = null;
+                    previousInput = null; // Resetamos previousInput após o cálculo final
                     waitingForSecondOperand = false;
+                    lastResultCalculated = true; // Define que o resultado final foi calculado
                     updateDisplay();
                 }
                 return;
@@ -911,7 +920,7 @@
         
         subTabsMenu.addEventListener('click', (e) => {
              if (e.target.classList.contains('sub-tab-button')) {
-                const subTabName = e.target.dataset.sub-tab;
+                const subTabName = e.target.dataset.subTab; // Correção: uso de dataset
                 showSubTab(subTabName);
             }
         });

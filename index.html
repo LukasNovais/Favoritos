@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meus Atalhos Essenciais + Calculadora</title>
+    <title>Meus Atalhos Essenciais + Calculadora Financeira</title>
     
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
     
@@ -103,7 +103,7 @@
             background-color: var(--card-bg);
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            max-width: 400px; /* Limita a largura para melhor visualização no celular */
+            max-width: 450px;
             margin: 0 auto;
         }
 
@@ -134,27 +134,42 @@
             border-top: 1px solid #eee;
             background-color: #f9f9f9;
             border-radius: 4px;
-            text-align: center;
         }
 
         #calc-result-box h4 {
             margin-top: 0;
             color: var(--primary-color);
             font-size: 1.1em;
+            text-align: center;
         }
 
+        .result-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
         .result-item {
-            margin-bottom: 5px;
-            font-size: 1.2em;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fff;
+            text-align: center;
+        }
+        
+        .result-value {
+            font-size: 1.3em;
             font-weight: 700;
-            color: #333;
+            color: #000;
+            display: block;
         }
 
-        .result-item span {
+        .result-label {
             font-weight: 400;
             font-size: 0.8em;
             color: #666;
             display: block;
+            line-height: 1.2;
         }
 
 
@@ -394,6 +409,9 @@
             .link-item {
                 padding: 10px 12px;
             }
+            .result-grid {
+                grid-template-columns: 1fr; /* Coluna única no celular */
+            }
         }
     </style>
 </head>
@@ -443,29 +461,53 @@
         </div>
 
         <div id="calculator-content" class="tab-content">
-            <h2>Consumo de Diesel (R$/L)</h2>
+            <h2>Cálculo de Consumo e Frete</h2>
 
             <div class="calc-input-group">
-                <label for="rendimento">Rendimento do Veículo (km/L)</label>
-                <input type="number" id="rendimento" step="0.1" placeholder="Ex: 10.5" required>
-            </div>
-
-            <div class="calc-input-group">
-                <label for="distancia">Distância Total (km)</label>
-                <input type="number" id="distancia" step="1" placeholder="Ex: 500" required>
-            </div>
-
-            <div class="calc-input-group">
-                <label for="preco">Preço do Diesel (R$/L)</label>
-                <input type="number" id="preco" step="0.01" placeholder="Ex: 5.89" required>
+                <label for="km-total">1. KM Total (Distância)</label>
+                <input type="number" id="km-total" step="1" placeholder="Ex: 500 km" required>
             </div>
             
-            <button id="calculate-btn" style="display: none;">Calcular</button>
+            <div class="calc-input-group">
+                <label for="valor-km">2. Valor KM Rodado (R$/km)</label>
+                <input type="number" id="valor-km" step="0.01" placeholder="Ex: 5.50 R$/km" required>
+            </div>
 
+            <div class="calc-input-group">
+                <label for="media">3. Média do Veículo (km/L)</label>
+                <input type="number" id="media" step="0.1" placeholder="Ex: 10.5 km/L" required>
+            </div>
+
+            <div class="calc-input-group">
+                <label for="valor-litro">4. Valor do Litro (R$/L)</label>
+                <input type="number" id="valor-litro" step="0.01" placeholder="Ex: 5.89 R$/L" required>
+            </div>
+            
             <div id="calc-result-box">
-                <h4>Resultado Estimado</h4>
-                <p class="result-item" id="litros-necessarios">0.00 L <span>Litros Necessários</span></p>
-                <p class="result-item" id="custo-total">R$ 0.00 <span>Custo Total</span></p>
+                <h4>Resultados Financeiros</h4>
+                
+                <div class="result-grid">
+                    <div class="result-item">
+                        <span class="result-value" id="frete-total">R$ 0.00</span>
+                        <span class="result-label">Frete Total</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-value" id="custo-diesel">R$ 0.00</span>
+                        <span class="result-label">Custo Diesel</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-value" id="litros-necessarios">0.00 L</span>
+                        <span class="result-label">Litros Necessários</span>
+                    </div>
+
+                    <div class="result-item">
+                        <span class="result-value" id="percentual-custo">0.00%</span>
+                        <span class="result-label">% Custo / Frete</span>
+                    </div>
+                </div>
+
             </div>
 
         </div>
@@ -484,8 +526,8 @@
 
         // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-container');
-        const tabsMenu = document.getElementById('tabs-menu'); // NOVO
-        const tabsContent = document.querySelectorAll('.tab-content'); // NOVO
+        const tabsMenu = document.getElementById('tabs-menu');
+        const tabsContent = document.querySelectorAll('.tab-content');
         const tabsList = document.getElementById('tabs');
         const adminFormContainer = document.getElementById('admin-form-container');
         const adminAddForm = document.getElementById('admin-add-link-form');
@@ -515,14 +557,18 @@
         }
 
         // ----------------------------------------
-        // 2. LÓGICA DA CALCULADORA DE DIESEL (NOVA)
+        // 2. LÓGICA DA CALCULADORA DE DIESEL (ATUALIZADA)
         // ----------------------------------------
         
-        const rendimentoInput = document.getElementById('rendimento');
-        const distanciaInput = document.getElementById('distancia');
-        const precoInput = document.getElementById('preco');
+        const kmTotalInput = document.getElementById('km-total');
+        const valorKmInput = document.getElementById('valor-km');
+        const mediaInput = document.getElementById('media');
+        const valorLitroInput = document.getElementById('valor-litro');
+        
+        const freteOutput = document.getElementById('frete-total');
         const litrosOutput = document.getElementById('litros-necessarios');
-        const custoOutput = document.getElementById('custo-total');
+        const custoDieselOutput = document.getElementById('custo-diesel');
+        const percentualCustoOutput = document.getElementById('percentual-custo');
 
         function formatCurrency(value) {
             return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(value);
@@ -531,41 +577,58 @@
         function formatLiters(value) {
             return parseFloat(value).toFixed(2).replace('.', ',') + ' L';
         }
+        
+        function formatPercent(value) {
+            return parseFloat(value).toFixed(2).replace('.', ',') + '%';
+        }
 
         function calculateDieselConsumption() {
-            const rendimento = parseFloat(rendimentoInput.value);
-            const distancia = parseFloat(distanciaInput.value);
-            const preco = parseFloat(precoInput.value);
+            const kmTotal = parseFloat(kmTotalInput.value || 0);
+            const valorKm = parseFloat(valorKmInput.value || 0);
+            const media = parseFloat(mediaInput.value || 0);
+            const valorLitro = parseFloat(valorLitroInput.value || 0);
 
-            // Validação simples
-            if (isNaN(rendimento) || isNaN(distancia) || rendimento <= 0 || distancia <= 0) {
-                litrosOutput.textContent = '0.00 L';
-                custoOutput.textContent = formatCurrency(0);
-                return;
+            // Variáveis de Saída
+            let freteTotal = 0;
+            let litrosNecessarios = 0;
+            let custoDiesel = 0;
+            let percentualCusto = 0;
+
+            // 1. Cálculo do Frete: KM total X Valor KM Rodado
+            freteTotal = kmTotal * valorKm;
+
+            // 2. Cálculo dos Litros: KM total / Media (km/L)
+            if (media > 0) {
+                litrosNecessarios = kmTotal / media;
             }
 
-            // Cálculo do Consumo: Litros = Distância / Rendimento (km/L)
-            const litrosNecessarios = distancia / rendimento;
+            // 3. Cálculo do Custo Diesel: Litros X Valor Litro
+            custoDiesel = litrosNecessarios * valorLitro;
 
-            // Cálculo do Custo: Custo = Litros * Preço
-            const custoTotal = litrosNecessarios * (isNaN(preco) ? 0 : preco);
+            // 4. Cálculo do Percentual: Custo / Frete
+            if (freteTotal > 0) {
+                percentualCusto = (custoDiesel / freteTotal) * 100;
+            }
             
+            // Atualiza os resultados na tela
+            freteOutput.textContent = formatCurrency(freteTotal);
             litrosOutput.textContent = formatLiters(litrosNecessarios);
-            custoOutput.textContent = formatCurrency(custoTotal);
+            custoDieselOutput.textContent = formatCurrency(custoDiesel);
+            percentualCustoOutput.textContent = formatPercent(percentualCusto);
         }
         
-        // Adiciona listeners para cálculo em tempo real
-        rendimentoInput.addEventListener('input', calculateDieselConsumption);
-        distanciaInput.addEventListener('input', calculateDieselConsumption);
-        precoInput.addEventListener('input', calculateDieselConsumption);
+        // Adiciona listeners para cálculo em tempo real a todos os campos relevantes
+        kmTotalInput.addEventListener('input', calculateDieselConsumption);
+        valorKmInput.addEventListener('input', calculateDieselConsumption);
+        mediaInput.addEventListener('input', calculateDieselConsumption);
+        valorLitroInput.addEventListener('input', calculateDieselConsumption);
 
 
         // ----------------------------------------
-        // 3. LÓGICA DE ABAS (TABS) (NOVA)
+        // 3. LÓGICA DE ABAS (TABS)
         // ----------------------------------------
         
         function showTab(tabName) {
-            // Remove 'active' de todo o conteúdo e botões
             tabsContent.forEach(content => {
                 content.classList.remove('active');
             });
@@ -573,17 +636,14 @@
                 button.classList.remove('active');
             });
 
-            // Adiciona 'active' à aba e botão corretos
             document.querySelector(`#${tabName}-content`).classList.add('active');
             document.querySelector(`.tab-button[data-tab="${tabName}"]`).classList.add('active');
 
-            // Se for a aba da calculadora, faz o primeiro cálculo (se houver dados)
             if (tabName === 'calculator') {
-                calculateDieselConsumption();
+                calculateDieselConsumption(); // Garante que o cálculo inicial seja feito
             }
         }
         
-        // Listener para o menu de abas
         tabsMenu.addEventListener('click', (e) => {
             if (e.target.classList.contains('tab-button')) {
                 const tabName = e.target.dataset.tab;
@@ -601,7 +661,6 @@
             document.body.classList.toggle('admin-mode', status); 
             adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
             adminStatus.textContent = status ? 'ADMIN' : '';
-            // Apenas o formulário de Admin é controlado pelo status, não a aba inteira
             document.getElementById('admin-form-container').classList.toggle('active', status);
 
             adminAuthBox.classList.remove('active');
@@ -882,7 +941,6 @@
             initializeCategories();
             renderLinks(activeCategory);
             updateAdminMode(false);
-            // Inicia na aba de links por padrão
             showTab('links'); 
         });
 

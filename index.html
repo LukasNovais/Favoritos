@@ -39,6 +39,7 @@
             max-width: 900px;
             text-align: center;
             margin-bottom: var(--spacing-unit);
+            padding: 0 5px; /* Adicionado padding para telas pequenas */
         }
 
         h1 {
@@ -76,6 +77,7 @@
             font-weight: 600;
             color: #666;
             transition: color 0.2s;
+            white-space: nowrap; /* Evita quebras de linha em nomes curtos */
         }
 
         .tab-button.active {
@@ -105,6 +107,8 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
             max-width: 450px;
             margin: 0 auto;
+            width: 100%; /* Garante que o card use a largura máxima disponível */
+            box-sizing: border-box; /* Adicionado para incluir padding na largura */
         }
 
         .calc-input-group {
@@ -174,7 +178,7 @@
 
 
         /* -------------------------------------- */
-        /* LAYOUT ADMIN (MANTIDO) */
+        /* LAYOUT ADMIN */
         /* -------------------------------------- */
         #top-controls {
             width: 100%;
@@ -201,13 +205,14 @@
             margin-bottom: var(--spacing-unit);
         }
 
-        /* ADMIN LOGIN */
+        /* ADMIN LOGIN - Ajustado para empilhar em telas pequenas */
         #admin-auth-box {
             display: flex;
             align-items: center;
             justify-content: flex-end;
             gap: 8px;
             padding-bottom: 5px;
+            flex-wrap: wrap; /* Permite quebrar linha em telas pequenas */
         }
 
         #admin-auth-box input[type="password"] {
@@ -241,10 +246,10 @@
             font-size: 0.9em;
         }
         
-        /* Formulários de Adição */
+        /* Formulários de Adição - Principal ajuste de responsividade */
         .link-form {
             display: grid;
-            grid-template-columns: 1fr 1fr auto auto;
+            grid-template-columns: 2fr 1fr 1fr auto; /* Layout de desktop */
             gap: 5px;
         }
 
@@ -296,16 +301,6 @@
             font-family: 'Consolas', 'Courier New', monospace;
             font-size: 12px;
             resize: vertical;
-        }
-
-        @media (max-width: 500px) {
-            .link-form {
-                grid-template-columns: 1fr;
-                gap: 5px;
-            }
-            .link-form button {
-                grid-column: span 1;
-            }
         }
 
         /* -------------------------------------- */
@@ -402,15 +397,62 @@
             display: block; 
         }
 
-        @media (max-width: 480px) {
+        /* -------------------------------------- */
+        /* MEDIA QUERIES (RESPONSIVIDADE MÓVEL) */
+        /* -------------------------------------- */
+        @media (max-width: 600px) {
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            /* Admin Login */
+            #admin-auth-box {
+                justify-content: space-between;
+                width: 100%;
+            }
+            
+            #admin-auth-box.active input[type="password"] {
+                width: 100px;
+                order: 3; /* Move a senha para a direita no fluxo */
+            }
+
+            /* Formulário Admin (Empilhamento) */
+            .link-form {
+                grid-template-columns: 1fr; /* Coluna única no celular */
+                gap: 8px;
+            }
+            .link-form button {
+                grid-column: span 1;
+            }
+            
+            /* Calculadora (Empilhamento de Resultados) */
+            .result-grid {
+                grid-template-columns: 1fr; /* Coluna única para os resultados */
+            }
+            
+            /* Links (Colunas maiores para melhor toque) */
             #links-container {
                 grid-template-columns: 1fr;
             }
             .link-item {
                 padding: 10px 12px;
             }
-            .result-grid {
-                grid-template-columns: 1fr; /* Coluna única no celular */
+            
+            /* Menu de abas apertado */
+            .tab-button {
+                padding: 8px 10px;
+                font-size: 0.9em;
+            }
+        }
+
+        @media (max-width: 400px) {
+            /* Ajustes finos para telas muito pequenas */
+            .link-form input, .link-form button, .link-form select {
+                font-size: 13px;
+            }
+            
+            #admin-login-btn, #admin-auth-btn {
+                 font-size: 0.8em;
             }
         }
     </style>
@@ -520,9 +562,8 @@
         const ADMIN_PASSWORD = 'prime.admin'; 
         const CATEGORIES = ['Ferramentas', 'Redes Sociais']; 
         
-        // ** LISTA CORRIGIDA **
-        // Se a lista no localStorage estiver vazia, o sistema usará esta lista.
-        // ** ATENÇÃO: Se você já tinha outros links adicionados, cole AQUI sua lista completa.**
+        // ** LISTA DE LINKS PADRÃO EMBUTIDA NO HTML **
+        // ATENÇÃO: Mantenha esta lista atualizada com seus links fixos usando o Gerador de Código.
         const DEFAULT_LINKS_JSON = '[{"url":"https://www.google.com","label":"Google","category":"Ferramentas","type":"admin"},{"url":"https://github.com","label":"GitHub","category":"Ferramentas","type":"admin"},{"url":"https://www.instagram.com","label":"Instagram","category":"Redes Sociais","type":"admin"}]';
         // -----------------------------------------------------------
 
@@ -551,7 +592,6 @@
         
         function loadAdminLinks() {
             const storedLinks = localStorage.getItem(ADMIN_LINKS_KEY);
-            // Se o local storage estiver vazio (primeira vez ou sumiu), usa a lista DEFAULT_LINKS_JSON
             return storedLinks ? JSON.parse(storedLinks) : JSON.parse(DEFAULT_LINKS_JSON);
         }
 
@@ -656,7 +696,7 @@
 
 
         // ----------------------------------------
-        // 4. LÓGICA DE DRAG AND DROP E ADMIN (MANTIDA)
+        // 4. LÓGICA DE DRAG AND DROP E ADMIN
         // ----------------------------------------
 
         function updateAdminMode(status) {
@@ -858,7 +898,6 @@
             
             let templateHtml = document.documentElement.outerHTML;
 
-            // Esta é a linha que substitui o JSON para salvar o estado dos links no HTML
             const regex = /(const\s+DEFAULT_LINKS_JSON\s+=\s+')([^']+?)(';)/;
             
             const newHtml = templateHtml.replace(regex, `$1${newJsonString}$3`);

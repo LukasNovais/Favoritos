@@ -9,16 +9,18 @@
     
     <style>
         /* -------------------------------------- */
-        /* CSS: ESTILO GERAL E LAYOUT COMPACTO */
+        /* CSS: ESTILO GERAL E CORES METÁLICAS */
         /* -------------------------------------- */
         :root {
-            --primary-color: #007bff;
-            --background-color: #f0f2f5;
+            /* Cores Metálicas/Sóbrias */
+            --primary-color: #3f51b5; /* Azul Escuro Sutil */
+            --background-color: #e6e6e6; /* Cinza Claro Suave */
             --card-bg: #ffffff;
-            --shadow-color: rgba(0, 0, 0, 0.2);
-            --delete-color: #dc3545;
-            --admin-color: #ffc107;
-            --success-color: #28a745;
+            --shadow-light: rgba(0, 0, 0, 0.1);
+            --shadow-dark: rgba(0, 0, 0, 0.2);
+            --delete-color: #d32f2f;
+            --admin-color: #ffb300;
+            --success-color: #43a047;
             --spacing-unit: 10px;
         }
 
@@ -32,19 +34,20 @@
             margin: 0;
             padding: var(--spacing-unit) 5px;
             color: #333;
+            transition: background-color 0.3s;
         }
 
         header {
             width: 100%;
             max-width: 900px;
             text-align: center;
-            margin-bottom: 5px; /* Reduzida margem após remoção do H1 */
+            margin-bottom: 5px;
             padding: 0 5px; 
-            min-height: 10px; /* Para manter o fluxo */
+            min-height: 10px;
         }
         
         /* -------------------------------------- */
-        /* CONTROLES DE ABAS (TABS) PRINCIPAIS */
+        /* CONTROLES DE ABAS (TABS) */
         /* -------------------------------------- */
         #tab-container {
             width: 100%;
@@ -54,66 +57,80 @@
 
         #tabs-menu {
             display: flex;
-            justify-content: center;
+            justify-content: space-around; /* Distribui bem as 3 abas */
             border-bottom: 2px solid #ccc;
             margin-bottom: 15px;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* Evita quebra de linha em telas pequenas */
+            box-shadow: 0 2px 4px var(--shadow-light);
         }
 
         .tab-button {
-            padding: 8px 15px;
+            flex-grow: 1; /* Distribui o espaço uniformemente */
+            padding: 12px 5px; /* Mais padding para melhor toque */
             cursor: pointer;
             font-size: 1em;
-            margin: 0 2px;
-            background: transparent;
+            background: #f8f8f8;
             border: none;
             border-bottom: 3px solid transparent;
             font-weight: 600;
             color: #666;
-            transition: color 0.2s;
+            transition: all 0.3s ease; /* Animação para o menu */
             white-space: nowrap; 
+            text-align: center;
+            border-radius: 4px 4px 0 0;
+            margin: 0 1px;
+        }
+
+        .tab-button:hover {
+             background-color: #efefef;
         }
 
         .tab-button.active {
             border-bottom-color: var(--primary-color);
             color: var(--primary-color);
+            background-color: var(--card-bg);
+            box-shadow: 0 -2px 5px var(--shadow-light);
         }
         
-        /* -------------------------------------- */
-        /* CONTROLES DE SUB-ABAS (SUB-TABS) */
-        /* -------------------------------------- */
+        /* Sub-Abas */
         #sub-tabs {
             display: flex;
             justify-content: center;
-            margin-bottom: 15px;
+            margin: 15px 0;
             gap: 10px;
         }
         
         #sub-tabs .sub-tab-button {
-            padding: 6px 12px;
-            background-color: #e9ecef;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
+            padding: 8px 15px;
+            background-color: #dcdde1; /* Cinza Metalizado */
+            border: 1px solid #c8c8c8;
+            border-radius: 6px;
             font-size: 0.9em;
             cursor: pointer;
-            transition: background-color 0.2s;
+            font-weight: 500;
+            transition: all 0.2s ease;
         }
         
+        #sub-tabs .sub-tab-button:hover {
+            background-color: #c8c8c8;
+        }
+
         #sub-tabs .sub-tab-button.active {
             background-color: var(--primary-color);
             color: white;
             border-color: var(--primary-color);
+            box-shadow: 0 2px 4px var(--shadow-light);
         }
 
         .sub-tab-content {
             display: none;
+            animation: fadeIn 0.4s;
         }
 
         .sub-tab-content.active {
             display: block;
         }
-        
-        /* Conteúdo principal da aba */
+
         .tab-content {
             display: none;
             padding: 0 5px;
@@ -124,311 +141,174 @@
         .tab-content.active {
             display: block;
         }
-
+        
         /* -------------------------------------- */
-        /* CALCULADORA DE CUSTO (DIESEL) */
+        /* LINKS COMO BOTÕES (RESPONSIVO) */
         /* -------------------------------------- */
-
-        #calculator-diesel-container { /* Renomeado para evitar conflito com calculadora padrão */
-            padding: 15px;
-            background-color: var(--card-bg);
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            max-width: 450px;
-            margin: 0 auto;
-            width: 100%; 
-            box-sizing: border-box; 
-        }
-
-        .calc-input-group {
-            margin-bottom: 15px;
-        }
-
-        .calc-input-group label {
-            display: block;
-            font-size: 0.9em;
-            font-weight: 600;
-            margin-bottom: 5px;
-            color: #555;
-        }
-
-        .calc-input-group input {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 1em;
-            box-sizing: border-box;
-        }
-
-        #calc-result-box {
-            margin-top: 20px;
-            padding: 15px;
-            border-top: 1px solid #eee;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-
-        #calc-result-box h4 {
-            margin-top: 0;
-            color: var(--primary-color);
-            font-size: 1.1em;
-            text-align: center;
-        }
-
-        .result-grid {
+        
+        #links-grid {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Colunas maiores e responsivas */
+            gap: 12px;
+            max-width: 900px;
+            width: 100%;
+            padding: 10px 5px;
         }
         
-        .result-item {
-            padding: 5px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            background-color: #fff;
-            text-align: center;
-        }
-        
-        .result-value {
-            font-size: 1.3em;
-            font-weight: 700;
-            color: #000;
-            display: block;
-        }
-
-        .result-label {
-            font-weight: 400;
-            font-size: 0.8em;
-            color: #666;
-            display: block;
-            line-height: 1.2;
-        }
-        
-        /* -------------------------------------- */
-        /* CALCULADORA PADRÃO (DENTRO DE LINKS) */
-        /* -------------------------------------- */
-        #basic-calculator {
-            padding: 15px;
-            background-color: var(--card-bg);
+        .link-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            text-decoration: none;
+            color: #333;
+            padding: 12px 15px;
             border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            max-width: 300px;
-            margin: 15px auto;
-            width: 100%;
-            box-sizing: border-box;
-        }
-
-        #calc-display {
-            width: 100%;
-            height: 50px;
-            background-color: #222;
-            color: white;
-            font-size: 1.8em;
-            text-align: right;
-            padding: 10px;
-            border-radius: 4px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-
-        #calc-buttons {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 5px;
-        }
-
-        #calc-buttons button {
-            padding: 15px;
-            font-size: 1.2em;
-            border: none;
-            border-radius: 4px;
+            background-color: #f1f1f1; /* Fundo mais claro para destaque */
+            border: 1px solid #d4d4d4;
+            box-shadow: 0 1px 3px var(--shadow-light);
+            transition: all 0.2s ease;
             cursor: pointer;
-            background-color: #e0e0e0;
-            transition: background-color 0.1s;
-        }
-
-        #calc-buttons button:hover {
-            background-color: #d4d4d4;
-        }
-
-        .operator {
-            background-color: #ff9500 !important;
-            color: white;
-        }
-
-        .operator:hover {
-            background-color: #e08500 !important;
-        }
-
-        .clear-btn, .equals-btn {
-            background-color: #ccc !important;
-        }
-
-        .equals-btn {
-            grid-column: span 2;
-            background-color: var(--primary-color) !important;
-            color: white;
+            overflow: hidden;
+            font-weight: 600;
         }
         
-        /* -------------------------------------- */
-        /* LAYOUT ADMIN (AGORA EM UMA ABA) */
-        /* -------------------------------------- */
-        #admin-content {
-             padding: 15px;
-             max-width: 600px;
-             margin: 0 auto;
-             width: 100%;
-             box-sizing: border-box;
+        .link-item:hover {
+            background-color: #e6e6e6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px var(--shadow-dark);
         }
+
+        .link-item .link-label {
+            font-size: 1em;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex-grow: 1;
+            padding-right: 10px;
+        }
+        
+        /* Botão X de Delete no Admin */
+        .delete-btn {
+            background-color: var(--delete-color);
+            color: white;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .link-item:hover .delete-btn { opacity: 1; }
+        
+        /* -------------------------------------- */
+        /* LAYOUT ADMIN */
+        /* -------------------------------------- */
         
         #admin-auth-box {
-            display: flex;
+            justify-content: center;
             align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        #admin-auth-box .flex-controls {
+            display: flex;
             gap: 8px;
-            padding: 15px;
-            border-radius: 8px;
-            background-color: var(--card-bg);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            justify-content: space-between;
-            flex-wrap: wrap; 
-            margin-bottom: 15px;
+            flex-wrap: nowrap;
+        }
+        
+        #admin-auth-box.active .flex-controls {
+            width: 100%;
         }
 
         #admin-auth-box input[type="password"] {
-            display: none;
-            padding: 8px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
             flex-grow: 1;
-        }
-        
-        /* Garante que o input e o botão apareçam juntos quando ativo */
-        #admin-auth-box.active input, #admin-auth-box.active #admin-auth-btn {
-            display: block;
-        }
-        
-        /* Esconde o status na aba admin até logar */
-        #admin-status {
-            font-weight: 600;
-            color: var(--admin-color);
-            font-size: 0.9em;
-            display: none;
-        }
-        body.admin-mode #admin-status {
-             display: inline-block;
-        }
-
-
-        #admin-login-btn, #admin-auth-btn {
-            background-color: var(--admin-color);
-            color: #333;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: background-color 0.3s;
-        }
-
-        /* Formulários de Adição e Gerador de Código */
-        #top-controls {
-            width: 100%;
-            max-width: 900px; /* Mantido para layout interno */
-            margin-bottom: var(--spacing-unit);
-            padding: 0 5px;
-        }
-
-        .link-form-container {
-            padding: var(--spacing-unit);
-            border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            margin-bottom: 15px;
-        }
-        
-        /* Formulário de Adição */
-        .link-form {
-            display: grid;
-            grid-template-columns: 2fr 1fr 1fr auto; 
-            gap: 5px;
-        }
-
-        .link-form input, .link-form button, .link-form select {
-            padding: 8px 10px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-        
-        #admin-form-container {
-            border-left: 5px solid var(--admin-color);
-            display: none; /* Controlado pelo JS ao logar */
-            margin-top: 15px;
-        }
-        
-        #admin-form-container.active {
-            display: block;
-        }
-        
-        /* Estilo para links (dentro da aba FERRAMENTAS > LINKS) */
-        #links-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-            max-width: 900px;
-            width: 100%;
-            padding: 15px 5px 0 5px;
+            min-width: 120px;
         }
 
         /* -------------------------------------- */
-        /* MEDIA QUERIES (RESPONSIVIDADE MÓVEL) */
+        /* CALCULADORAS (CUSTO E PADRÃO) */
+        /* -------------------------------------- */
+
+        #calculator-diesel-container, #basic-calculator {
+            background-color: var(--card-bg);
+            box-shadow: 0 4px 10px var(--shadow-light);
+        }
+
+        /* Calculadora Padrão Botões */
+        #calc-buttons button {
+            background-color: #f1f1f1;
+            box-shadow: 0 1px 2px var(--shadow-light);
+        }
+        .operator {
+            background-color: #ff9800 !important; /* Laranja Metálico */
+        }
+        .equals-btn {
+            background-color: var(--primary-color) !important;
+        }
+
+        /* -------------------------------------- */
+        /* MEDIA QUERIES (RESPONSIVIDADE CELULAR) */
         /* -------------------------------------- */
         @media (max-width: 600px) {
-            /* Admin Login */
+            
+            #tabs-menu {
+                box-shadow: none; /* Remove a sombra em telas pequenas para economizar espaço */
+            }
+            .tab-button {
+                padding: 10px 5px;
+                font-size: 0.9em;
+            }
+            
+            /* Links em coluna única no celular */
+            #links-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .link-item {
+                padding: 14px 15px;
+            }
+            
+            /* Admin Login: Empilhamento */
             #admin-auth-box {
                 flex-direction: column;
                 align-items: stretch;
             }
-            #admin-auth-box #admin-login-btn,
-            #admin-auth-box #admin-auth-btn {
-                width: 100%;
-                box-sizing: border-box;
+            #admin-auth-box .flex-controls {
+                 flex-wrap: wrap; 
             }
             #admin-auth-box input[type="password"] {
-                width: 100%;
-                box-sizing: border-box;
+                 width: 100%;
             }
-
+            
             /* Formulário Admin (Empilhamento) */
             .link-form {
                 grid-template-columns: 1fr; 
                 gap: 8px;
             }
-            .link-form button {
-                grid-column: span 1;
-            }
             
-            /* Calculadora (Empilhamento de Resultados) */
+            /* Calculadora Padrão */
+            #basic-calculator {
+                 max-width: 95%;
+            }
+
+            /* Calculadora Custo */
+            #calculator-diesel-container {
+                 max-width: 95%;
+            }
             .result-grid {
-                grid-template-columns: 1fr; 
-            }
-            
-            /* Links (Colunas maiores para melhor toque) */
-            #links-grid {
-                grid-template-columns: 1fr;
-            }
-            .link-item {
-                padding: 10px 12px;
-            }
-            
-            /* Menu de abas apertado */
-            .tab-button {
-                padding: 8px 8px;
-                font-size: 0.9em;
+                grid-template-columns: 1fr; /* Empilha resultados no celular */
             }
         }
+        
+        /* Animação Básica de Transição */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .tab-content.active, .sub-tab-content.active {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        /* Classes de drag and drop... mantidas do código anterior */
+        .link-item.dragging { opacity: 0.3; transform: scale(0.98); }
+        .link-item.drop-target-above { border-top: 2px solid var(--primary-color); padding-top: 6px; }
+        .link-item.drop-target-below { border-bottom: 2px solid var(--primary-color); padding-bottom: 6px; }
     </style>
 </head>
 <body class="admin-mode-disabled">
@@ -541,10 +421,13 @@
         
         <div id="admin-content" class="tab-content">
              
-             <div id="admin-auth-box">
+             <div id="admin-auth-box" class="link-form-container">
                  <button id="admin-login-btn">Acesso Admin</button>
-                 <span id="admin-status">ADMIN</span> <input type="password" id="admin-password-input" placeholder="Senha">
-                 <button id="admin-auth-btn" style="display:none;">Entrar</button>
+                 <span id="admin-status">ADMIN</span> 
+                 <div class="flex-controls">
+                    <input type="password" id="admin-password-input" placeholder="Senha">
+                    <button id="admin-auth-btn" style="display:none;">Entrar</button>
+                 </div>
              </div>
              
              <div id="top-controls">
@@ -757,7 +640,6 @@
             const media = parseFloat(mediaInput.value || 0);
             const valorLitro = parseFloat(valorLitroInput.value || 0);
 
-            // Variáveis de Saída
             let freteTotal = 0;
             let litrosNecessarios = 0;
             let custoDiesel = 0;
@@ -806,7 +688,6 @@
                 calculateDieselConsumption(); 
             }
             if (tabName === 'links') {
-                // Ao mudar para FERRAMENTAS, garanta que a sub-aba ativa seja exibida
                 const activeSubTab = document.querySelector('#sub-tabs .sub-tab-button.active').dataset.subTab;
                 showSubTab(activeSubTab);
             }
@@ -823,13 +704,11 @@
             document.getElementById(`${subTabName}-sub-content`).classList.add('active');
             document.querySelector(`#sub-tabs .sub-tab-button[data-sub-tab="${subTabName}"]`).classList.add('active');
 
-            // Se for a calculadora padrão, limpa o display
             if (subTabName === 'basic-calc') {
                 clear(); 
             }
         }
         
-        // Listener para abas principais
         tabsMenu.addEventListener('click', (e) => {
             if (e.target.classList.contains('tab-button')) {
                 const tabName = e.target.dataset.tab;
@@ -837,10 +716,9 @@
             }
         });
         
-        // Listener para sub-abas (Links/Calculadora)
         subTabsMenu.addEventListener('click', (e) => {
              if (e.target.classList.contains('sub-tab-button')) {
-                const subTabName = e.target.dataset.subTab;
+                const subTabName = e.target.dataset.sub-tab;
                 showSubTab(subTabName);
             }
         });
@@ -854,7 +732,7 @@
             isAdmin = status;
             document.body.classList.toggle('admin-mode', status); 
             adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
-            adminStatus.style.display = status ? 'inline-block' : 'none'; // Controla a visibilidade do status
+            adminStatus.style.display = status ? 'inline-block' : 'none'; 
 
             document.getElementById('admin-form-container').classList.toggle('active', status);
 
@@ -1039,12 +917,10 @@
             
             let templateHtml = document.documentElement.outerHTML;
 
-            // Altera a lista de categorias no código final
             const categoriesRegex = /(const\s+CATEGORIES\s+=\s+)\[([^\]]+)\]/i;
             const newCategoriesString = `['${CATEGORIES.join("', '")}']`;
             templateHtml = templateHtml.replace(categoriesRegex, `$1${newCategoriesString}`);
 
-            // Altera a lista de links padrão no código final
             const linksRegex = /(const\s+DEFAULT_LINKS_JSON\s+=\s+')([^']+?)(';)/;
             
             const newHtml = templateHtml.replace(linksRegex, `$1${newJsonString}$3`);
@@ -1102,7 +978,6 @@
             if (isAdmin) {
                 updateAdminMode(false);
             } else {
-                // Ao clicar em Acesso Admin: mostra campos de senha
                 adminAuthBox.classList.add('active');
                 adminPasswordInput.style.display = 'block';
                 adminAuthBtn.style.display = 'block';
@@ -1129,11 +1004,12 @@
 
         // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
+            clear(); 
             initializeCategories();
             renderLinks(activeCategory);
             updateAdminMode(false);
-            showMainTab('links'); // Inicia na aba FERRAMENTAS
-            showSubTab('links-only'); // Inicia no sub-menu Links
+            showMainTab('links'); 
+            showSubTab('links-only'); 
         });
 
     </script>

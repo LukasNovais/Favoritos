@@ -520,7 +520,9 @@
         const ADMIN_PASSWORD = 'prime.admin'; 
         const CATEGORIES = ['Ferramentas', 'Redes Sociais']; 
         
-        // ** AQUI FICA A LISTA DE LINKS PADRÃO EMBUTIDA NO HTML **
+        // ** LISTA CORRIGIDA **
+        // Se a lista no localStorage estiver vazia, o sistema usará esta lista.
+        // ** ATENÇÃO: Se você já tinha outros links adicionados, cole AQUI sua lista completa.**
         const DEFAULT_LINKS_JSON = '[{"url":"https://www.google.com","label":"Google","category":"Ferramentas","type":"admin"},{"url":"https://github.com","label":"GitHub","category":"Ferramentas","type":"admin"},{"url":"https://www.instagram.com","label":"Instagram","category":"Redes Sociais","type":"admin"}]';
         // -----------------------------------------------------------
 
@@ -549,6 +551,7 @@
         
         function loadAdminLinks() {
             const storedLinks = localStorage.getItem(ADMIN_LINKS_KEY);
+            // Se o local storage estiver vazio (primeira vez ou sumiu), usa a lista DEFAULT_LINKS_JSON
             return storedLinks ? JSON.parse(storedLinks) : JSON.parse(DEFAULT_LINKS_JSON);
         }
 
@@ -557,7 +560,7 @@
         }
 
         // ----------------------------------------
-        // 2. LÓGICA DA CALCULADORA DE DIESEL (ATUALIZADA)
+        // 2. LÓGICA DA CALCULADORA DE DIESEL
         // ----------------------------------------
         
         const kmTotalInput = document.getElementById('km-total');
@@ -640,7 +643,7 @@
             document.querySelector(`.tab-button[data-tab="${tabName}"]`).classList.add('active');
 
             if (tabName === 'calculator') {
-                calculateDieselConsumption(); // Garante que o cálculo inicial seja feito
+                calculateDieselConsumption(); 
             }
         }
         
@@ -720,7 +723,7 @@
             return link;
         }
         
-        function handleDragStart(e) { /* Lógica mantida */
+        function handleDragStart(e) { 
             if (!isAdmin) { e.preventDefault(); return; }
             draggedItem = e.target;
             e.dataTransfer.effectAllowed = 'move';
@@ -728,7 +731,7 @@
             setTimeout(() => { e.target.classList.add('dragging'); }, 0);
         }
 
-        function handleDragEnd(e) { /* Lógica mantida */
+        function handleDragEnd(e) { 
             e.target.classList.remove('dragging');
             linksContainer.querySelectorAll('.drop-target-above, .drop-target-below').forEach(el => {
                 el.classList.remove('drop-target-above', 'drop-target-below');
@@ -736,7 +739,7 @@
             draggedItem = null;
         }
 
-        function handleDragOver(e) { /* Lógica mantida */
+        function handleDragOver(e) { 
             if (!isAdmin) return;
             e.preventDefault();
             
@@ -757,7 +760,7 @@
             }
         }
 
-        function handleDrop(e) { /* Lógica mantida */
+        function handleDrop(e) { 
             if (!isAdmin) return;
             e.preventDefault();
             
@@ -793,7 +796,7 @@
             outputCodeArea.value = 'Links alterados. Clique em "Gerar Código Final" para salvar a nova ordem.';
         }
         
-        function handleDeleteAdminLink(indexToDelete) { /* Lógica mantida */
+        function handleDeleteAdminLink(indexToDelete) { 
             let links = loadAdminLinks();
             
             const activeLinks = links.filter(link => link.category === activeCategory);
@@ -809,7 +812,7 @@
             outputCodeArea.value = 'Links alterados. Clique em "Gerar Código Final" para salvar a nova ordem.';
         }
 
-        function renderLinks(category) { /* Lógica mantida */
+        function renderLinks(category) { 
             activeCategory = category;
             linksContainer.innerHTML = '';
             
@@ -830,7 +833,7 @@
             });
         }
         
-        function initializeCategories() { /* Lógica mantida */
+        function initializeCategories() { 
             const adminSelect = document.getElementById('admin-category-select');
             
             tabsList.innerHTML = '';
@@ -849,12 +852,13 @@
             activeCategory = CATEGORIES[0];
         }
         
-        function generateFinalHtml() { /* Lógica mantida */
+        function generateFinalHtml() { 
             const currentLinks = loadAdminLinks();
             const newJsonString = JSON.stringify(currentLinks);
             
             let templateHtml = document.documentElement.outerHTML;
 
+            // Esta é a linha que substitui o JSON para salvar o estado dos links no HTML
             const regex = /(const\s+DEFAULT_LINKS_JSON\s+=\s+')([^']+?)(';)/;
             
             const newHtml = templateHtml.replace(regex, `$1${newJsonString}$3`);
@@ -878,7 +882,7 @@
         // 5. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
         // ----------------------------------------
 
-        function handleAddLink(event) { /* Lógica mantida */
+        function handleAddLink(event) { 
             event.preventDefault();
             
             if (!isAdmin) return;
@@ -908,7 +912,7 @@
         generatorBtn.addEventListener('click', generateFinalHtml);
 
         // --- Lógica de Login Admin ---
-        adminLoginBtn.addEventListener('click', () => { /* Lógica mantida */
+        adminLoginBtn.addEventListener('click', () => { 
             if (isAdmin) {
                 updateAdminMode(false);
             } else {
@@ -919,7 +923,7 @@
             }
         });
 
-        adminAuthBtn.addEventListener('click', () => { /* Lógica mantida */
+        adminAuthBtn.addEventListener('click', () => { 
             const password = adminPasswordInput.value;
             if (password === ADMIN_PASSWORD) {
                 updateAdminMode(true);
@@ -930,7 +934,7 @@
             }
         });
         
-        adminPasswordInput.addEventListener('keypress', (e) => { /* Lógica mantida */
+        adminPasswordInput.addEventListener('keypress', (e) => { 
             if (e.key === 'Enter') {
                 adminAuthBtn.click();
             }

@@ -38,19 +38,13 @@
             width: 100%;
             max-width: 900px;
             text-align: center;
-            margin-bottom: var(--spacing-unit);
+            margin-bottom: 5px; /* Reduzida margem após remoção do H1 */
             padding: 0 5px; 
-        }
-
-        h1 {
-            color: #2c3e50;
-            font-weight: 700;
-            margin-bottom: 5px;
-            font-size: 1.8em;
+            min-height: 10px; /* Para manter o fluxo */
         }
         
         /* -------------------------------------- */
-        /* CONTROLES DE ABAS (TABS) */
+        /* CONTROLES DE ABAS (TABS) PRINCIPAIS */
         /* -------------------------------------- */
         #tab-container {
             width: 100%;
@@ -84,7 +78,42 @@
             border-bottom-color: var(--primary-color);
             color: var(--primary-color);
         }
+        
+        /* -------------------------------------- */
+        /* CONTROLES DE SUB-ABAS (SUB-TABS) */
+        /* -------------------------------------- */
+        #sub-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            gap: 10px;
+        }
+        
+        #sub-tabs .sub-tab-button {
+            padding: 6px 12px;
+            background-color: #e9ecef;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            transition: background-color 0.2s;
+        }
+        
+        #sub-tabs .sub-tab-button.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
 
+        .sub-tab-content {
+            display: none;
+        }
+
+        .sub-tab-content.active {
+            display: block;
+        }
+        
+        /* Conteúdo principal da aba */
         .tab-content {
             display: none;
             padding: 0 5px;
@@ -100,7 +129,7 @@
         /* CALCULADORA DE CUSTO (DIESEL) */
         /* -------------------------------------- */
 
-        #calculator-content {
+        #calculator-diesel-container { /* Renomeado para evitar conflito com calculadora padrão */
             padding: 15px;
             background-color: var(--card-bg);
             border-radius: 8px;
@@ -243,14 +272,70 @@
         }
         
         /* -------------------------------------- */
-        /* LAYOUT ADMIN */
+        /* LAYOUT ADMIN (AGORA EM UMA ABA) */
         /* -------------------------------------- */
+        #admin-content {
+             padding: 15px;
+             max-width: 600px;
+             margin: 0 auto;
+             width: 100%;
+             box-sizing: border-box;
+        }
+        
+        #admin-auth-box {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: var(--card-bg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            justify-content: space-between;
+            flex-wrap: wrap; 
+            margin-bottom: 15px;
+        }
+
+        #admin-auth-box input[type="password"] {
+            display: none;
+            padding: 8px 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            flex-grow: 1;
+        }
+        
+        /* Garante que o input e o botão apareçam juntos quando ativo */
+        #admin-auth-box.active input, #admin-auth-box.active #admin-auth-btn {
+            display: block;
+        }
+        
+        /* Esconde o status na aba admin até logar */
+        #admin-status {
+            font-weight: 600;
+            color: var(--admin-color);
+            font-size: 0.9em;
+            display: none;
+        }
+        body.admin-mode #admin-status {
+             display: inline-block;
+        }
+
+
+        #admin-login-btn, #admin-auth-btn {
+            background-color: var(--admin-color);
+            color: #333;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9em;
+            transition: background-color 0.3s;
+        }
+
+        /* Formulários de Adição e Gerador de Código */
         #top-controls {
             width: 100%;
-            max-width: 900px;
-            display: flex;
-            flex-direction: column;
-            gap: var(--spacing-unit);
+            max-width: 900px; /* Mantido para layout interno */
             margin-bottom: var(--spacing-unit);
             padding: 0 5px;
         }
@@ -260,58 +345,10 @@
             border-radius: 8px;
             background-color: #fff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-        }
-
-        .link-form-container h3 {
-            font-size: 1em;
-            margin-top: 0;
-            border-bottom: 1px solid #eee;
-            padding-bottom: 5px;
-            margin-bottom: var(--spacing-unit);
-        }
-
-        /* ADMIN LOGIN - Ajustado para empilhar em telas pequenas */
-        #admin-auth-box {
-            display: flex;
-            align-items: center;
-            justify-content: flex-end;
-            gap: 8px;
-            padding-bottom: 5px;
-            flex-wrap: wrap; 
-        }
-
-        #admin-auth-box input[type="password"] {
-            display: none;
-            padding: 6px 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            width: 100px;
-        }
-
-        #admin-auth-box.active input, #admin-auth-box.active #admin-auth-btn {
-            display: block;
+            margin-bottom: 15px;
         }
         
-        #admin-login-btn, #admin-auth-btn {
-            background-color: var(--admin-color);
-            color: #333;
-            border: none;
-            padding: 6px 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: 600;
-            font-size: 0.9em;
-            transition: background-color 0.3s;
-        }
-
-        #admin-status {
-            font-weight: 600;
-            color: var(--admin-color);
-            margin-left: 5px;
-            font-size: 0.9em;
-        }
-        
-        /* Formulários de Adição - Principal ajuste de responsividade */
+        /* Formulário de Adição */
         .link-form {
             display: grid;
             grid-template-columns: 2fr 1fr 1fr auto; 
@@ -327,51 +364,15 @@
         
         #admin-form-container {
             border-left: 5px solid var(--admin-color);
-            display: none;
+            display: none; /* Controlado pelo JS ao logar */
+            margin-top: 15px;
         }
         
         #admin-form-container.active {
             display: block;
         }
         
-        /* Gerador de Código */
-        #generator-box {
-            padding: var(--spacing-unit);
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            background-color: #fff;
-            margin-top: 15px;
-        }
-
-        #generator-btn {
-            background-color: var(--success-color);
-            color: white;
-            border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-            margin-bottom: 10px;
-        }
-
-        #output-code {
-            width: 100%;
-            height: 250px;
-            margin-top: 5px;
-            padding: 10px;
-            box-sizing: border-box;
-            border: 1px dashed #ccc;
-            background-color: #f8f8f8;
-            font-family: 'Consolas', 'Courier New', monospace;
-            font-size: 12px;
-            resize: vertical;
-        }
-
-        /* -------------------------------------- */
-        /* ESTILO DOS LINKS */
-        /* -------------------------------------- */
-        
+        /* Estilo para links (dentro da aba FERRAMENTAS > LINKS) */
         #links-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -380,99 +381,24 @@
             width: 100%;
             padding: 15px 5px 0 5px;
         }
-        
-        .link-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            text-decoration: none;
-            color: #333;
-            padding: 8px 12px;
-            border-radius: 6px;
-            background-color: var(--card-bg);
-            text-align: left;
-            position: relative;
-            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
-            transition: background-color 0.2s, transform 0.2s;
-            cursor: pointer;
-            overflow: hidden;
-        }
-        
-        .link-item:hover {
-            background-color: #f5f5f5;
-        }
-
-        .link-item .link-label {
-            font-size: 0.9em;
-            font-weight: 500;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            flex-grow: 1;
-            padding-right: 5px;
-        }
-        
-        /* ESTILOS DE DRAG AND DROP */
-        .link-item.dragging {
-            opacity: 0.3;
-            transform: scale(0.98);
-        }
-        
-        .link-item.drop-target-above {
-            border-top: 2px solid var(--primary-color);
-            padding-top: 6px;
-        }
-        
-        .link-item.drop-target-below {
-            border-bottom: 2px solid var(--primary-color);
-            padding-bottom: 6px;
-        }
-
-        .delete-btn {
-            position: static;
-            flex-shrink: 0;
-            margin-left: 5px;
-            width: 18px;
-            height: 18px;
-            font-size: 12px;
-            line-height: 16px;
-            background-color: var(--delete-color);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            cursor: pointer;
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-
-        .link-item:hover .delete-btn { opacity: 1; }
-        .link-item[data-type="admin"] .delete-btn { display: none; }
-        
-        body.admin-mode .link-item {
-            cursor: grab;
-        }
-        body.admin-mode .link-item[data-type="admin"] .delete-btn { 
-            opacity: 1; 
-            display: block; 
-        }
 
         /* -------------------------------------- */
         /* MEDIA QUERIES (RESPONSIVIDADE MÓVEL) */
         /* -------------------------------------- */
         @media (max-width: 600px) {
-            h1 {
-                font-size: 1.5em;
-            }
-            
             /* Admin Login */
             #admin-auth-box {
-                justify-content: space-between;
-                width: 100%;
+                flex-direction: column;
+                align-items: stretch;
             }
-            
-            #admin-auth-box.active input[type="password"] {
-                width: 100px;
-                order: 3; 
+            #admin-auth-box #admin-login-btn,
+            #admin-auth-box #admin-auth-btn {
+                width: 100%;
+                box-sizing: border-box;
+            }
+            #admin-auth-box input[type="password"] {
+                width: 100%;
+                box-sizing: border-box;
             }
 
             /* Formulário Admin (Empilhamento) */
@@ -499,24 +425,8 @@
             
             /* Menu de abas apertado */
             .tab-button {
-                padding: 8px 10px;
+                padding: 8px 8px;
                 font-size: 0.9em;
-            }
-        }
-
-        @media (max-width: 400px) {
-            /* Ajustes finos para telas muito pequenas */
-            .link-form input, .link-form button, .link-form select {
-                font-size: 13px;
-            }
-            
-            #admin-login-btn, #admin-auth-btn {
-                 font-size: 0.8em;
-            }
-            
-            #calc-buttons button {
-                padding: 10px;
-                font-size: 1em;
             }
         }
     </style>
@@ -524,53 +434,120 @@
 <body class="admin-mode-disabled">
 
     <header>
-        <h1>Ferramentas Essenciais</h1>
-        
-        <div id="admin-auth-box">
-            <span id="admin-status"></span>
-            <input type="password" id="admin-password-input" placeholder="Senha">
-            <button id="admin-login-btn">Acesso Admin</button>
-            <button id="admin-auth-btn" style="display:none;">Entrar</button>
-        </div>
-    </header>
+        </header>
 
     <div id="tab-container">
         
         <div id="tabs-menu">
             <button class="tab-button active" data-tab="links">FERRAMENTAS</button>
             <button class="tab-button" data-tab="calculator">CUSTO</button>
+            <button class="tab-button" data-tab="admin">ADMIN</button>
         </div>
 
         <div id="links-content" class="tab-content active">
             
-            <div id="basic-calculator">
-                <div id="calc-display">0</div>
-                <div id="calc-buttons">
-                    <button class="clear-btn">C</button>
-                    <button class="operator">/</button>
-                    <button class="operator">*</button>
-                    <button class="operator">-</button>
-                    
-                    <button>7</button>
-                    <button>8</button>
-                    <button>9</button>
-                    <button class="operator">+</button>
-                    
-                    <button>4</button>
-                    <button>5</button>
-                    <button>6</button>
-                    <button>1</button>
-                    
-                    <button>2</button>
-                    <button>3</button>
-                    <button class="equals-btn">=</button>
-                    
-                    <button>0</button>
-                    <button>.</button>
+            <div id="sub-tabs">
+                <button class="sub-tab-button active" data-sub-tab="links-only">Links</button>
+                <button class="sub-tab-button" data-sub-tab="basic-calc">Calculadora</button>
+            </div>
+            
+            <div id="basic-calc-sub-content" class="sub-tab-content">
+                <div id="basic-calculator">
+                    <div id="calc-display">0</div>
+                    <div id="calc-buttons">
+                        <button class="clear-btn">C</button>
+                        <button class="operator">/</button>
+                        <button class="operator">*</button>
+                        <button class="operator">-</button>
+                        
+                        <button>7</button>
+                        <button>8</button>
+                        <button>9</button>
+                        <button class="operator">+</button>
+                        
+                        <button>4</button>
+                        <button>5</button>
+                        <button>6</button>
+                        <button>1</button>
+                        
+                        <button>2</button>
+                        <button>3</button>
+                        <button class="equals-btn">=</button>
+                        
+                        <button>0</button>
+                        <button>.</button>
+                    </div>
                 </div>
             </div>
             
-            <div id="top-controls">
+            <div id="links-only-sub-content" class="sub-tab-content active">
+                <main id="links-grid"></main>
+            </div>
+            
+        </div>
+
+        <div id="calculator-content" class="tab-content">
+            <div id="calculator-diesel-container">
+                <h2>Cálculo de Consumo e Frete</h2>
+    
+                <div class="calc-input-group">
+                    <label for="km-total">1. KM Total (Distância)</label>
+                    <input type="number" id="km-total" step="1" placeholder="Ex: 500 km" required>
+                </div>
+                
+                <div class="calc-input-group">
+                    <label for="valor-km">2. Valor KM Rodado (R$/km)</label>
+                    <input type="number" id="valor-km" step="0.01" placeholder="Ex: 5.50 R$/km" required>
+                </div>
+    
+                <div class="calc-input-group">
+                    <label for="media">3. Média do Veículo (km/L)</label>
+                    <input type="number" id="media" step="0.1" placeholder="Ex: 10.5 km/L" required>
+                </div>
+    
+                <div class="calc-input-group">
+                    <label for="valor-litro">4. Valor do Litro (R$/L)</label>
+                    <input type="number" id="valor-litro" step="0.01" placeholder="Ex: 5.89 R$/L" required>
+                </div>
+                
+                <div id="calc-result-box">
+                    <h4>Resultados Financeiros</h4>
+                    
+                    <div class="result-grid">
+                        <div class="result-item">
+                            <span class="result-value" id="frete-total">R$ 0.00</span>
+                            <span class="result-label">Frete Total</span>
+                        </div>
+    
+                        <div class="result-item">
+                            <span class="result-value" id="custo-diesel">R$ 0.00</span>
+                            <span class="result-label">Custo Diesel</span>
+                        </div>
+    
+                        <div class="result-item">
+                            <span class="result-value" id="litros-necessarios">0.00 L</span>
+                            <span class="result-label">Litros Necessários</span>
+                        </div>
+    
+                        <div class="result-item">
+                            <span class="result-value" id="percentual-custo">0.00%</span>
+                            <span class="result-label">% Custo / Frete</span>
+                        </div>
+                    </div>
+    
+                </div>
+            </div>
+        </div>
+        
+        <div id="admin-content" class="tab-content">
+             
+             <div id="admin-auth-box">
+                 <button id="admin-login-btn">Acesso Admin</button>
+                 <span id="admin-status">ADMIN</span> <input type="password" id="admin-password-input" placeholder="Senha">
+                 <button id="admin-auth-btn" style="display:none;">Entrar</button>
+             </div>
+             
+             <div id="top-controls">
                 <div id="admin-form-container" class="link-form-container">
                     <h3>Gerenciar Links Padrão (Fixos)</h3>
                     <form id="admin-add-link-form" class="link-form">
@@ -587,62 +564,7 @@
 
                 </div>
             </div>
-
-            <div id="tabs"></div>
-            <main id="links-grid"></main>
-
-        </div>
-
-        <div id="calculator-content" class="tab-content">
-            <h2>Cálculo de Consumo e Frete</h2>
-
-            <div class="calc-input-group">
-                <label for="km-total">1. KM Total (Distância)</label>
-                <input type="number" id="km-total" step="1" placeholder="Ex: 500 km" required>
-            </div>
             
-            <div class="calc-input-group">
-                <label for="valor-km">2. Valor KM Rodado (R$/km)</label>
-                <input type="number" id="valor-km" step="0.01" placeholder="Ex: 5.50 R$/km" required>
-            </div>
-
-            <div class="calc-input-group">
-                <label for="media">3. Média do Veículo (km/L)</label>
-                <input type="number" id="media" step="0.1" placeholder="Ex: 10.5 km/L" required>
-            </div>
-
-            <div class="calc-input-group">
-                <label for="valor-litro">4. Valor do Litro (R$/L)</label>
-                <input type="number" id="valor-litro" step="0.01" placeholder="Ex: 5.89 R$/L" required>
-            </div>
-            
-            <div id="calc-result-box">
-                <h4>Resultados Financeiros</h4>
-                
-                <div class="result-grid">
-                    <div class="result-item">
-                        <span class="result-value" id="frete-total">R$ 0.00</span>
-                        <span class="result-label">Frete Total</span>
-                    </div>
-
-                    <div class="result-item">
-                        <span class="result-value" id="custo-diesel">R$ 0.00</span>
-                        <span class="result-label">Custo Diesel</span>
-                    </div>
-
-                    <div class="result-item">
-                        <span class="result-value" id="litros-necessarios">0.00 L</span>
-                        <span class="result-label">Litros Necessários</span>
-                    </div>
-
-                    <div class="result-item">
-                        <span class="result-value" id="percentual-custo">0.00%</span>
-                        <span class="result-label">% Custo / Frete</span>
-                    </div>
-                </div>
-
-            </div>
-
         </div>
 
     </div>
@@ -651,19 +573,20 @@
         // --- CHAVES PARA ARMAZENAMENTO LOCAL ---
         const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; 
         const ADMIN_PASSWORD = 'prime.admin'; 
-        // CATEGORIA ÚNICA: FERRAMENTAS
         const CATEGORIES = ['Ferramentas']; 
         
         // ** LISTA DE LINKS PADRÃO EMBUTIDA NO HTML **
-        // Instagram removido.
         const DEFAULT_LINKS_JSON = '[{"url":"https://www.google.com","label":"Google","category":"Ferramentas","type":"admin"},{"url":"https://github.com","label":"GitHub","category":"Ferramentas","type":"admin"}]';
         // -----------------------------------------------------------
 
         // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-grid');
         const tabsMenu = document.getElementById('tabs-menu');
-        const tabsContent = document.querySelectorAll('.tab-content');
-        const tabsList = document.getElementById('tabs');
+        const mainTabsContent = document.querySelectorAll('.tab-content');
+        
+        const subTabsMenu = document.getElementById('sub-tabs');
+        const subTabsContent = document.querySelectorAll('.sub-tab-content');
+
         const adminFormContainer = document.getElementById('admin-form-container');
         const adminAddForm = document.getElementById('admin-add-link-form');
         const adminLoginBtn = document.getElementById('admin-login-btn');
@@ -758,7 +681,7 @@
                 previousInput = currentInput;
             } else if (operator) {
                 const result = performCalculation();
-                currentInput = String(result).slice(0, 10); // Limita a 10 dígitos
+                currentInput = String(result).slice(0, 10); 
                 previousInput = currentInput;
             }
             
@@ -840,30 +763,24 @@
             let custoDiesel = 0;
             let percentualCusto = 0;
 
-            // 1. Cálculo do Frete: KM total X Valor KM Rodado
             freteTotal = kmTotal * valorKm;
 
-            // 2. Cálculo dos Litros: KM total / Media (km/L)
             if (media > 0) {
                 litrosNecessarios = kmTotal / media;
             }
 
-            // 3. Cálculo do Custo Diesel: Litros X Valor Litro
             custoDiesel = litrosNecessarios * valorLitro;
 
-            // 4. Cálculo do Percentual: Custo / Frete
             if (freteTotal > 0) {
                 percentualCusto = (custoDiesel / freteTotal) * 100;
             }
             
-            // Atualiza os resultados na tela
             freteOutput.textContent = formatCurrency(freteTotal);
             litrosOutput.textContent = formatLiters(litrosNecessarios);
             custoDieselOutput.textContent = formatCurrency(custoDiesel);
             percentualCustoOutput.textContent = formatPercent(percentualCusto);
         }
         
-        // Adiciona listeners para cálculo em tempo real a todos os campos relevantes
         kmTotalInput.addEventListener('input', calculateDieselConsumption);
         valorKmInput.addEventListener('input', calculateDieselConsumption);
         mediaInput.addEventListener('input', calculateDieselConsumption);
@@ -871,11 +788,11 @@
 
 
         // ----------------------------------------
-        // 4. LÓGICA DE ABAS (TABS)
+        // 4. LÓGICA DE ABAS (PRINCIPAIS E SUB)
         // ----------------------------------------
         
-        function showTab(tabName) {
-            tabsContent.forEach(content => {
+        function showMainTab(tabName) {
+            mainTabsContent.forEach(content => {
                 content.classList.remove('active');
             });
             document.querySelectorAll('#tabs-menu .tab-button').forEach(button => {
@@ -888,12 +805,43 @@
             if (tabName === 'calculator') {
                 calculateDieselConsumption(); 
             }
+            if (tabName === 'links') {
+                // Ao mudar para FERRAMENTAS, garanta que a sub-aba ativa seja exibida
+                const activeSubTab = document.querySelector('#sub-tabs .sub-tab-button.active').dataset.subTab;
+                showSubTab(activeSubTab);
+            }
         }
         
+        function showSubTab(subTabName) {
+            subTabsContent.forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('#sub-tabs .sub-tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+
+            document.getElementById(`${subTabName}-sub-content`).classList.add('active');
+            document.querySelector(`#sub-tabs .sub-tab-button[data-sub-tab="${subTabName}"]`).classList.add('active');
+
+            // Se for a calculadora padrão, limpa o display
+            if (subTabName === 'basic-calc') {
+                clear(); 
+            }
+        }
+        
+        // Listener para abas principais
         tabsMenu.addEventListener('click', (e) => {
             if (e.target.classList.contains('tab-button')) {
                 const tabName = e.target.dataset.tab;
-                showTab(tabName);
+                showMainTab(tabName);
+            }
+        });
+        
+        // Listener para sub-abas (Links/Calculadora)
+        subTabsMenu.addEventListener('click', (e) => {
+             if (e.target.classList.contains('sub-tab-button')) {
+                const subTabName = e.target.dataset.subTab;
+                showSubTab(subTabName);
             }
         });
 
@@ -906,7 +854,8 @@
             isAdmin = status;
             document.body.classList.toggle('admin-mode', status); 
             adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
-            adminStatus.textContent = status ? 'ADMIN' : '';
+            adminStatus.style.display = status ? 'inline-block' : 'none'; // Controla a visibilidade do status
+
             document.getElementById('admin-form-container').classList.toggle('active', status);
 
             adminAuthBox.classList.remove('active');
@@ -1070,21 +1019,14 @@
             if (adminLinks.length === 0) {
                  linksContainer.innerHTML = `<p style="width: 100%; text-align: center; color: #777;">Nenhum atalho encontrado na categoria "${category}".</p>`;
             }
-
-            document.querySelectorAll('#tabs .tab-button').forEach(btn => {
-                btn.classList.toggle('active', btn.textContent === category);
-            });
         }
         
         function initializeCategories() { 
             const adminSelect = document.getElementById('admin-category-select');
             
-            tabsList.innerHTML = '';
             adminSelect.innerHTML = '';
             
             CATEGORIES.forEach(category => {
-                // Remove as abas de categoria de links, pois agora só temos uma.
-                
                 adminSelect.insertAdjacentHTML('beforeend', `<option value="${category}">${category}</option>`);
             });
             
@@ -1160,6 +1102,7 @@
             if (isAdmin) {
                 updateAdminMode(false);
             } else {
+                // Ao clicar em Acesso Admin: mostra campos de senha
                 adminAuthBox.classList.add('active');
                 adminPasswordInput.style.display = 'block';
                 adminAuthBtn.style.display = 'block';
@@ -1186,13 +1129,11 @@
 
         // --- Inicialização ---
         document.addEventListener('DOMContentLoaded', () => {
-            // Inicializa a calculadora básica
-            clear(); 
-            
             initializeCategories();
             renderLinks(activeCategory);
             updateAdminMode(false);
-            showTab('links'); // Inicia na aba FERRAMENTAS (links-content)
+            showMainTab('links'); // Inicia na aba FERRAMENTAS
+            showSubTab('links-only'); // Inicia no sub-menu Links
         });
 
     </script>

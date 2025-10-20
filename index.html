@@ -119,17 +119,18 @@
         }
         
         #sub-tabs .sub-tab-button {
-            padding: 8px 15px;
+            padding: 6px 8px; /* Reduzido para mobile */
             background-color: var(--card-bg); 
             border: 1px solid #c8c8c8;
             border-radius: 6px;
-            font-size: 0.9em;
+            font-size: 0.85em; /* Reduzido para mobile */
             cursor: pointer;
             font-weight: 500;
             transition: all 0.2s ease;
             box-shadow: 0 1px 3px var(--shadow-light);
             margin: 0;
             white-space: nowrap; /* Garante que os botões não quebrem o texto */
+            flex-grow: 1;
         }
         
         #sub-tabs .sub-tab-button:hover {
@@ -280,13 +281,46 @@
             transition: background-color 0.2s, transform 0.1s;
         }
         
-        .link-form button[type="submit"] {
+        .link-form button[type="submit"], #add-category-btn {
             background-color: var(--primary-color);
         }
 
-        .link-form button[type="submit"]:hover {
+        .link-form button[type="submit"]:hover, #add-category-btn:hover {
             background-color: var(--primary-hover);
         }
+        
+        /* -------------------------------------- */
+        /* ADMIN: GERENCIAMENTO DE CATEGORIAS */
+        /* -------------------------------------- */
+        #category-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 10px;
+        }
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 10px;
+            border-bottom: 1px solid #eee;
+            font-weight: 500;
+        }
+        .category-item:last-child {
+            border-bottom: none;
+        }
+        .category-item button {
+            background-color: var(--delete-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            padding: 2px 6px;
+            font-size: 0.8em;
+            cursor: pointer;
+        }
+        .category-item button:hover {
+            background-color: #a30000;
+        }
+
 
         /* -------------------------------------- */
         /* CALCULADORA PADRÃO (VISUAL ARRUMADO) */
@@ -447,18 +481,6 @@
                 grid-template-columns: 1fr;
             }
             
-            /* Ajuste para Sub-Abas em Celular (para caber na mesma linha) */
-            #sub-tabs {
-                gap: 5px; /* Reduz o espaçamento */
-                justify-content: space-between;
-                flex-wrap: nowrap; /* Tenta manter na mesma linha */
-            }
-            #sub-tabs .sub-tab-button {
-                padding: 6px 8px; /* Reduz o padding */
-                font-size: 0.85em; /* Reduz o tamanho da fonte */
-                flex-grow: 1; /* Permite que os botões se expandam um pouco */
-            }
-            
             /* Calculadora Padrão */
             #basic-calculator {
                  max-width: 95%;
@@ -504,10 +526,7 @@
         <div id="links-content" class="tab-content active">
             
             <div id="sub-tabs">
-                <button class="sub-tab-button active" data-sub-tab="Ferramentas">LINKS</button>
-                <button class="sub-tab-button" data-sub-tab="Rastreadores">Rastreadores</button>
-                <button class="sub-tab-button" data-sub-tab="basic-calc">Calculadora</button>
-            </div>
+                </div>
             
             <div id="basic-calc-sub-content" class="sub-tab-content">
                 <div id="basic-calculator">
@@ -518,23 +537,23 @@
                         <button class="percent-btn">%</button>
                         <button class="operator">/</button>
                         
-                        <button>7</button>
-                        <button>8</button>
-                        <button>9</button>
+                        <button data-value="7">7</button>
+                        <button data-value="8">8</button>
+                        <button data-value="9">9</button>
                         <button class="operator">*</button>
                         
-                        <button>4</button>
-                        <button>5</button>
-                        <button>6</button>
+                        <button data-value="4">4</button>
+                        <button data-value="5">5</button>
+                        <button data-value="6">6</button>
                         <button class="operator">-</button>
                         
-                        <button>1</button>
-                        <button>2</button>
-                        <button>3</button>
+                        <button data-value="1">1</button>
+                        <button data-value="2">2</button>
+                        <button data-value="3">3</button>
                         <button class="operator">+</button>
                         
-                        <button style="grid-column: span 2;">0</button>
-                        <button>.</button>
+                        <button data-value="0" style="grid-column: span 2;">0</button>
+                        <button data-value=".">.</button>
                         <button class="equals-btn">=</button>
                     </div>
                 </div>
@@ -611,7 +630,19 @@
              </div>
              
              <div id="top-controls">
-                <div id="admin-form-container" class="link-form-container">
+                 
+                <div id="category-manager-container" class="link-form-container" style="display:none;">
+                    <h3>Gerenciar Categorias de Links</h3>
+                    <p style="font-size:0.85em; color:#777;">* A categoria 'Ferramentas' (Links) é o padrão e não pode ser removida.</p>
+                    <div style="display: flex; gap: 8px;">
+                        <input type="text" id="new-category-input" placeholder="Nome da Nova Categoria (Ex: Suporte)" required>
+                        <button id="add-category-btn" style="min-width: 120px; flex-shrink: 0;">Adicionar</button>
+                    </div>
+                    <ul id="category-list">
+                        </ul>
+                </div>
+                 
+                <div id="admin-form-container" class="link-form-container" style="display:none;">
                     <h3>Gerenciar Links Padrão (Fixos)</h3>
                     <form id="admin-add-link-form" class="link-form">
                         <input type="text" id="admin-link-input" placeholder="URL: www.fixo.com" required>
@@ -635,24 +666,23 @@
     <script>
         // --- CHAVES PARA ARMAZENAMENTO LOCAL ---
         const ADMIN_LINKS_KEY = 'admin_links_padrao_v3'; 
-        const USER_ORDER_KEY = 'user_links_order_v3'; // Chave para salvar a ordem customizada por usuário
+        const USER_ORDER_KEY = 'user_links_order_v3'; 
+        const CATEGORIES_KEY = 'admin_categories_list_v1';
         const ADMIN_PASSWORD = 'prime.admin'; 
-        // CATEGORIAS INTERNAS (Deve incluir 'Ferramentas' e 'Rastreadores')
-        const CATEGORIES = ['Ferramentas', 'Rastreadores']; 
         
-        // ** LISTA DE LINKS PADRÃO EMBUTIDA NO HTML ** (Mantenha o seu JSON aqui)
+        // ** LISTA DE CATEGORIAS PADRÃO EMBUTIDA **
+        const DEFAULT_CATEGORIES_JSON = '["Ferramentas", "Rastreadores"]'; 
+        
+        // ** LISTA DE LINKS PADRÃO EMBUTIDA NO HTML **
         const DEFAULT_LINKS_JSON = '[{"url":"https://www.google.com","label":"Google","category":"Ferramentas","type":"admin"},{"url":"https://github.com","label":"GitHub","category":"Ferramentas","type":"admin"}]';
         // -----------------------------------------------------------
 
         // --- Variáveis DOM e de Estado ---
         const linksContainer = document.getElementById('links-grid');
         const tabsMenu = document.getElementById('tabs-menu');
-        const mainTabsContent = document.querySelectorAll('.tab-content');
         
         const subTabsMenu = document.getElementById('sub-tabs');
-        const subTabsContent = document.querySelectorAll('.sub-tab-content');
-
-        const adminFormContainer = document.getElementById('admin-form-container');
+        
         const adminAddForm = document.getElementById('admin-add-link-form');
         const adminLoginBtn = document.getElementById('admin-login-btn');
         const adminAuthBtn = document.getElementById('admin-auth-btn');
@@ -662,7 +692,13 @@
         const generatorBtn = document.getElementById('generator-btn');
         const outputCodeArea = document.getElementById('output-code');
         
-        let activeCategory = 'Ferramentas'; // Define a categoria padrão
+        // Elementos para Gerenciamento de Categorias
+        const categoryManagerContainer = document.getElementById('category-manager-container');
+        const newCategoryInput = document.getElementById('new-category-input');
+        const addCategoryBtn = document.getElementById('add-category-btn');
+        const categoryListUL = document.getElementById('category-list');
+        
+        let activeCategory = 'Ferramentas'; 
         let isAdmin = false;
         let draggedItem = null; 
 
@@ -679,6 +715,27 @@
             localStorage.setItem(ADMIN_LINKS_KEY, JSON.stringify(links));
         }
         
+        function loadCategories() {
+            const storedCategories = localStorage.getItem(CATEGORIES_KEY);
+            let categories = storedCategories ? JSON.parse(storedCategories) : JSON.parse(DEFAULT_CATEGORIES_JSON);
+            
+            // Garante que "Ferramentas" (Links) esteja sempre na primeira posição
+            if (categories.includes("Ferramentas")) {
+                categories = categories.filter(c => c !== "Ferramentas");
+                categories.unshift("Ferramentas");
+            } else {
+                 categories.unshift("Ferramentas");
+            }
+            
+            return categories;
+        }
+
+        function saveCategories(categories) {
+            // Remove categorias reservadas (como a calculadora) antes de salvar, se houver
+            const linksCategories = categories.filter(c => c !== 'basic-calc');
+            localStorage.setItem(CATEGORIES_KEY, JSON.stringify(linksCategories));
+        }
+        
         function loadUserOrder(category) {
             const orderMap = JSON.parse(localStorage.getItem(USER_ORDER_KEY) || '{}');
             return orderMap[category] || null;
@@ -686,7 +743,6 @@
 
         function saveUserOrder(category, linksArray) {
             const orderMap = JSON.parse(localStorage.getItem(USER_ORDER_KEY) || '{}');
-            // Salva apenas as URLs na ordem atual
             orderMap[category] = linksArray.map(link => link.url);
             localStorage.setItem(USER_ORDER_KEY, JSON.stringify(orderMap));
         }
@@ -704,9 +760,15 @@
         let lastResultCalculated = false;
 
         function updateDisplay() {
-            display.textContent = currentInput.length > 10 && !waitingForSecondOperand ? parseFloat(currentInput).toExponential(5) : currentInput;
+            // Limita o número de dígitos para evitar estouro, usando notação científica se necessário
+            display.textContent = currentInput.length > 10 && !waitingForSecondOperand && !currentInput.includes('E') ? 
+                                 parseFloat(currentInput).toPrecision(8) : 
+                                 currentInput;
+            if (display.textContent.length > 15) { // Para telas pequenas
+                display.textContent = parseFloat(currentInput).toExponential(5);
+            }
         }
-
+        
         function clear() {
             currentInput = '0';
             operator = null;
@@ -717,7 +779,11 @@
         }
 
         function inputDigit(digit) {
-            if (currentInput.length > 10 && !waitingForSecondOperand && !lastResultCalculated) return;
+            if (currentInput === 'Erro') {
+                currentInput = '0';
+            }
+            // Impede adição de mais dígitos se já tiver 15 (aprox)
+            if (currentInput.length >= 15 && !waitingForSecondOperand && !lastResultCalculated) return;
             
             if (waitingForSecondOperand || lastResultCalculated) {
                 currentInput = digit;
@@ -730,6 +796,9 @@
         }
 
         function inputDecimal() {
+            if (currentInput === 'Erro') {
+                currentInput = '0';
+            }
             if (waitingForSecondOperand || lastResultCalculated) {
                 currentInput = '0.';
                 waitingForSecondOperand = false;
@@ -763,6 +832,10 @@
         }
 
         function handleOperator(nextOperator) {
+            if (currentInput === 'Erro') {
+                clear();
+                return;
+            }
             if (operator && waitingForSecondOperand) {
                 operator = nextOperator;
                 lastResultCalculated = false;
@@ -792,11 +865,13 @@
         }
         
         function handleSignChange() {
+            if (currentInput === 'Erro') return;
             currentInput = String(parseFloat(currentInput) * -1);
             updateDisplay();
         }
 
         function handlePercentage() {
+            if (currentInput === 'Erro') return;
             const current = parseFloat(currentInput);
             if (operator && previousInput !== null) {
                 const prev = parseFloat(previousInput);
@@ -809,32 +884,23 @@
             lastResultCalculated = false;
             updateDisplay();
         }
-
+        
+        // CORREÇÃO: Listener da Calculadora reescrito para usar data-value/textContent
         buttons.addEventListener('click', (event) => {
             const { target } = event;
             if (!target.matches('button')) return;
 
+            const buttonValue = target.dataset.value || target.textContent;
+
             if (target.classList.contains('operator')) {
                 handleOperator(target.textContent);
-                return;
-            }
-
-            if (target.classList.contains('clear-btn')) {
+            } else if (target.classList.contains('clear-btn')) {
                 clear();
-                return;
-            }
-            
-            if (target.classList.contains('sign-btn')) {
+            } else if (target.classList.contains('sign-btn')) {
                 handleSignChange();
-                return;
-            }
-
-            if (target.classList.contains('percent-btn')) {
+            } else if (target.classList.contains('percent-btn')) {
                 handlePercentage();
-                return;
-            }
-            
-            if (target.classList.contains('equals-btn')) {
+            } else if (target.classList.contains('equals-btn')) {
                 if (operator && previousInput !== null) {
                     const result = performCalculation();
                     if (result === 'Erro') {
@@ -848,15 +914,11 @@
                     lastResultCalculated = true;
                     updateDisplay();
                 }
-                return;
-            }
-            
-            if (target.textContent === '.') {
+            } else if (buttonValue === '.') {
                 inputDecimal();
-                return;
+            } else if (!isNaN(parseFloat(buttonValue)) && isFinite(buttonValue)) {
+                inputDigit(buttonValue);
             }
-
-            inputDigit(target.textContent);
         });
 
 
@@ -868,7 +930,6 @@
         const valorKmInput = document.getElementById('valor-km');
         const mediaInput = document.getElementById('media');
         const valorLitroInput = document.getElementById('valor-litro');
-        
         const freteOutput = document.getElementById('frete-total');
         const litrosOutput = document.getElementById('litros-necessarios');
         const custoDieselOutput = document.getElementById('custo-diesel');
@@ -925,8 +986,42 @@
         // 4. LÓGICA DE ABAS (PRINCIPAIS E SUB)
         // ----------------------------------------
         
+        // Função para redenrizar dinamicamente as sub-abas de Links
+        function renderSubTabs() {
+            const categories = loadCategories();
+            subTabsMenu.innerHTML = '';
+            
+            // Adiciona as categorias de Links
+            categories.forEach(category => {
+                const isLinksMain = category === 'Ferramentas';
+                const label = isLinksMain ? 'LINKS' : category;
+                
+                const button = document.createElement('button');
+                button.classList.add('sub-tab-button');
+                button.setAttribute('data-sub-tab', category);
+                button.textContent = label;
+                
+                if (category === activeCategory) {
+                    button.classList.add('active');
+                }
+                
+                subTabsMenu.appendChild(button);
+            });
+            
+            // Adiciona a sub-aba fixa da Calculadora
+            const calcButton = document.createElement('button');
+            calcButton.classList.add('sub-tab-button');
+            calcButton.setAttribute('data-sub-tab', 'basic-calc');
+            calcButton.textContent = 'Calculadora';
+            
+            if (activeCategory === 'basic-calc') {
+                calcButton.classList.add('active');
+            }
+            subTabsMenu.appendChild(calcButton);
+        }
+        
         function showMainTab(tabName) {
-            mainTabsContent.forEach(content => {
+            document.querySelectorAll('.tab-content').forEach(content => {
                 content.classList.remove('active');
             });
             document.querySelectorAll('#tabs-menu .tab-button').forEach(button => {
@@ -942,41 +1037,46 @@
             if (tabName === 'calculator') {
                 calculateDieselConsumption(); 
             }
+            
             if (tabName === 'links') {
-                // Ao mudar para a aba links, verifica qual sub-aba estava ativa ou define a primeira
-                const activeSubTabButton = document.querySelector('#sub-tabs .sub-tab-button.active');
-                // Mantém a categoria ativa ou define "Ferramentas" (que é a categoria interna do sub-tab LINKS)
-                const defaultSubTab = activeSubTabButton ? activeSubTabButton.dataset.subTab : 'Ferramentas';
+                // Redesenha as sub-abas (caso uma nova tenha sido adicionada/removida)
+                renderSubTabs(); 
                 
-                showSubTab(defaultSubTab);
+                const currentCategories = loadCategories();
+                // Garante que a categoria ativa exista ou volta para o padrão
+                const availableTabs = [...currentCategories, 'basic-calc'];
+                if (!availableTabs.includes(activeCategory)) {
+                    activeCategory = 'Ferramentas';
+                }
+                
+                // Garante que a sub-aba correta seja mostrada ao mudar para 'links'
+                showSubTab(activeCategory);
             }
         }
         
         function showSubTab(subTabName) {
-            subTabsContent.forEach(content => {
-                content.classList.remove('active');
-            });
-            document.querySelectorAll('#sub-tabs .sub-tab-button').forEach(button => {
-                button.classList.remove('active');
-            });
+            activeCategory = subTabName; 
 
-            const targetSubContent = document.getElementById('links-only-sub-content'); 
+            // Desativa todos os conteúdos de sub-abas e botões
+            document.getElementById('basic-calc-sub-content').classList.remove('active');
+            document.getElementById('links-only-sub-content').classList.remove('active');
+            
+            // É importante renderizar os botões aqui para que o estado "active" seja aplicado corretamente
+            renderSubTabs(); 
+
+            // Ativa o botão correto e conteúdo
             const targetSubButton = document.querySelector(`#sub-tabs .sub-tab-button[data-sub-tab="${subTabName}"]`);
-
             if (targetSubButton) {
                 targetSubButton.classList.add('active');
+            }
                 
-                if (subTabName === 'basic-calc') {
-                    // Se for a calculadora, ativa o container da calculadora
-                    document.getElementById('basic-calc-sub-content').classList.add('active');
-                    linksContainer.innerHTML = '';
-                    clear(); 
-                } else {
-                    // Se for uma categoria de links (Ferramentas ou Rastreadores), renderiza os links
-                    targetSubContent.classList.add('active');
-                    document.getElementById('basic-calc-sub-content').classList.remove('active');
-                    renderLinks(subTabName);
-                }
+            if (subTabName === 'basic-calc') {
+                document.getElementById('basic-calc-sub-content').classList.add('active');
+                linksContainer.innerHTML = '';
+                clear(); 
+            } else {
+                document.getElementById('links-only-sub-content').classList.add('active');
+                renderLinks(subTabName);
             }
         }
         
@@ -987,7 +1087,7 @@
             }
         });
         
-        // CORREÇÃO: Uso de 'subTab' em camelCase para acessar data-sub-tab
+        // Listener para as sub-abas (delegado ao container)
         subTabsMenu.addEventListener('click', (e) => {
              if (e.target.classList.contains('sub-tab-button')) {
                 const subTabName = e.target.dataset.subTab; 
@@ -1006,19 +1106,20 @@
             adminLoginBtn.textContent = status ? 'Sair do Modo Admin' : 'Acesso Admin';
             adminStatus.style.display = status ? 'inline-block' : 'none'; 
 
-            document.getElementById('admin-form-container').classList.toggle('active', status);
+            document.getElementById('admin-form-container').style.display = status ? 'block' : 'none';
+            categoryManagerContainer.style.display = status ? 'block' : 'none';
 
             adminAuthBox.classList.remove('active');
             adminPasswordInput.style.display = 'none';
             adminAuthBtn.style.display = 'none';
             adminPasswordInput.value = '';
             outputCodeArea.value = '';
-
-            // Renderiza novamente para mostrar/esconder botões X e ativar/desativar Drag and Drop
-            const activeSubTabButton = document.querySelector('#sub-tabs .sub-tab-button.active');
-            if (activeSubTabButton && activeSubTabButton.dataset.subTab !== 'basic-calc') {
-                renderLinks(activeSubTabButton.dataset.subTab);
+            
+            // Renderiza novamente a lista de links e as categorias (para habilitar X)
+            if (activeCategory !== 'basic-calc') {
+                renderLinks(activeCategory);
             }
+            renderCategoryManager();
         }
         
         function createLinkItem(linkData, index) {
@@ -1028,10 +1129,9 @@
             link.href = url;
             link.target = "_blank";
             link.classList.add('link-item');
-            link.setAttribute('data-url', url); // Usado para identificar o link
+            link.setAttribute('data-url', url); 
             link.setAttribute('data-index', index); 
             
-            // Permite Drag and Drop para TODOS os usuários
             link.setAttribute('draggable', 'true');
             link.addEventListener('dragstart', handleDragStart);
             link.addEventListener('dragend', handleDragEnd);
@@ -1047,7 +1147,6 @@
             
             link.appendChild(span);
             
-            // Botão X (Excluir) visível APENAS para o Admin
             if (isAdmin) {
                 const deleteBtn = document.createElement('button');
                 deleteBtn.textContent = 'X';
@@ -1062,12 +1161,8 @@
                 });
                 link.appendChild(deleteBtn);
             }
-
-
             return link;
         }
-        
-        // --- LÓGICA DE DRAG AND DROP (PARA USUÁRIO COMUM E ADMIN) ---
 
         function handleDragStart(e) { 
             draggedItem = e.target;
@@ -1086,7 +1181,6 @@
 
         function handleDragOver(e) { 
             e.preventDefault();
-            
             const target = e.target.closest('.link-item');
             if (!target || target === draggedItem) return;
 
@@ -1121,29 +1215,24 @@
 
             if (draggedIndex === -1 || targetIndex === -1) return;
 
-            // Remove e insere
             const [movedUrl] = currentUrls.splice(draggedIndex, 1);
             
             let dropPosition = targetIndex;
             if (target.classList.contains('drop-target-below')) {
                 dropPosition = targetIndex + 1;
             } else if (dropPosition > draggedIndex) {
-                 // Ajuste para não pular um slot se estiver se movendo para cima
                  dropPosition = targetIndex;
             }
             
             currentUrls.splice(dropPosition, 0, movedUrl);
 
-            // Se for Admin, a mudança é global; se for Usuário, é local.
             if (isAdmin) {
-                // Lógica Admin: Atualiza o objeto global de links e renderiza
                 updateGlobalLinkOrder(currentUrls);
                 outputCodeArea.value = 'Links alterados globalmente. Clique em "Gerar Código Final" para salvar a nova ordem no código.';
             } else {
-                // Lógica Usuário: Salva apenas a ordem local e renderiza
                 const allLinks = loadAdminLinks().filter(link => link.category === activeCategory);
                 const newOrderedLinks = currentUrls.map(url => allLinks.find(link => link.url === url));
-                saveUserOrder(activeCategory, newOrderedLinks.filter(Boolean)); // Salva a ordem customizada no Local Storage
+                saveUserOrder(activeCategory, newOrderedLinks.filter(Boolean)); 
             }
             
             renderLinks(activeCategory);
@@ -1161,11 +1250,9 @@
             saveAdminLinks(newLinks);
         }
         
-        // --- LÓGICA DE EXCLUSÃO (APENAS ADMIN) ---
         function handleDeleteAdminLink(urlToDelete, category) { 
             let links = loadAdminLinks();
             
-            // Remove o link da lista global
             const indexToRemove = links.findIndex(link => link.url === urlToDelete && link.category === category);
             if (indexToRemove > -1) {
                 links.splice(indexToRemove, 1);
@@ -1173,7 +1260,6 @@
 
             saveAdminLinks(links);
             
-            // Limpa a ordem customizada do usuário para esta categoria, se existir
             const orderMap = JSON.parse(localStorage.getItem(USER_ORDER_KEY) || '{}');
             delete orderMap[category];
             localStorage.setItem(USER_ORDER_KEY, JSON.stringify(orderMap));
@@ -1181,22 +1267,21 @@
             renderLinks(activeCategory);
             outputCodeArea.value = 'Link excluído. Clique em "Gerar Código Final" para salvar a alteração no código.';
         }
-
+        
         function renderLinks(category) { 
             activeCategory = category;
             linksContainer.innerHTML = '';
             
+            if (category === 'basic-calc') return;
+
             let allLinks = loadAdminLinks();
             let adminLinks = allLinks.filter(link => link.category === category);
             
-            // Tenta carregar a ordem customizada do usuário
             const userOrderUrls = loadUserOrder(category);
             
             if (userOrderUrls && userOrderUrls.length > 0) {
-                // Reorganiza os links com base na ordem do usuário, mas garante que links novos ou excluídos sejam considerados
                 let orderedLinks = userOrderUrls.map(url => adminLinks.find(link => link.url === url)).filter(Boolean);
                 
-                // Adiciona novos links que não estão na ordem customizada (mantendo o link original por último)
                 const existingUrlsInOrder = orderedLinks.map(link => link.url);
                 adminLinks.forEach(link => {
                     if (!existingUrlsInOrder.includes(link.url)) {
@@ -1216,66 +1301,119 @@
             }
         }
         
-        function initializeCategories() { 
+        
+        // ----------------------------------------
+        // 6. NOVO: GERENCIAMENTO DE CATEGORIAS
+        // ----------------------------------------
+        
+        function renderCategoryManager() {
+            if (!isAdmin) return;
+            
+            const categories = loadCategories(); 
+            categoryListUL.innerHTML = '';
+            
+            categories.forEach(category => {
+                if (category === 'basic-calc') return; // Ignora a calculadora na lista de gerenciamento
+                
+                const li = document.createElement('li');
+                li.classList.add('category-item');
+                li.textContent = category;
+                
+                if (category !== 'Ferramentas') {
+                    const removeBtn = document.createElement('button');
+                    removeBtn.textContent = 'X';
+                    removeBtn.addEventListener('click', () => {
+                        if (confirm(`Tem certeza que deseja remover a categoria "${category}"? Todos os links dela serão apagados!`)) {
+                            handleDeleteCategory(category);
+                        }
+                    });
+                    li.appendChild(removeBtn);
+                } else {
+                    const span = document.createElement('span');
+                    span.style.fontSize = '0.8em';
+                    span.style.color = '#999';
+                    span.textContent = ' (Fixo - LINKS)';
+                    li.appendChild(span);
+                }
+                
+                categoryListUL.appendChild(li);
+            });
+            
+            // Atualiza o select de links
+            initializeCategorySelect();
+        }
+        
+        function handleAddCategory() {
+            const newName = newCategoryInput.value.trim();
+            if (newName.length < 2 || newName.toLowerCase() === 'basic-calc') {
+                alert('Nome de categoria inválido ou reservado.');
+                return;
+            }
+            
+            let categories = loadCategories();
+            if (categories.includes(newName)) {
+                alert('Essa categoria já existe.');
+                return;
+            }
+            
+            categories.push(newName);
+            saveCategories(categories);
+            newCategoryInput.value = '';
+            
+            renderCategoryManager();
+            renderSubTabs();
+            outputCodeArea.value = `Nova categoria "${newName}" adicionada. Clique em "Gerar Código Final" para salvar a alteração no código.`;
+        }
+        
+        function handleDeleteCategory(categoryToDelete) {
+            let categories = loadCategories();
+            categories = categories.filter(c => c !== categoryToDelete);
+            
+            // 1. Apaga os links desta categoria
+            let links = loadAdminLinks();
+            links = links.filter(link => link.category !== categoryToDelete);
+            saveAdminLinks(links);
+            
+            // 2. Salva as novas categorias
+            saveCategories(categories);
+            
+            // 3. Atualiza a interface
+            if (activeCategory === categoryToDelete) {
+                // Ao deletar a categoria ativa, volta para a primeira categoria de links (Ferramentas)
+                showSubTab('Ferramentas'); 
+            }
+            renderCategoryManager();
+            renderSubTabs();
+            
+            outputCodeArea.value = `Categoria "${categoryToDelete}" removida junto com seus links. Clique em "Gerar Código Final" para salvar a alteração no código.`;
+        }
+
+        addCategoryBtn.addEventListener('click', handleAddCategory);
+        newCategoryInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                handleAddCategory();
+            }
+        });
+
+
+        // ----------------------------------------
+        // 7. LISTENERS E INICIALIZAÇÃO
+        // ----------------------------------------
+        
+        function initializeCategorySelect() { 
             const adminSelect = document.getElementById('admin-category-select');
+            const categories = loadCategories();
             
             adminSelect.innerHTML = '';
             
-            CATEGORIES.forEach(category => {
-                adminSelect.insertAdjacentHTML('beforeend', `<option value="${category}">${category}</option>`);
+            categories.forEach(category => {
+                if (category !== 'basic-calc') {
+                    adminSelect.insertAdjacentHTML('beforeend', `<option value="${category}">${category}</option>`);
+                }
             });
-            
-            // Define o botão ativo (Ferramentas)
-            const defaultButton = document.querySelector(`#sub-tabs .sub-tab-button[data-sub-tab="Ferramentas"]`);
-            if (defaultButton) {
-                defaultButton.classList.add('active');
-            }
-            activeCategory = 'Ferramentas';
         }
         
-        function generateFinalHtml() { 
-            let links = loadAdminLinks();
-            
-            // Garante que a ordem global do Admin é a que será salva, se ele tiver movido algo antes de gerar
-            if(isAdmin) {
-                 const currentUrls = Array.from(linksContainer.querySelectorAll('.link-item')).map(el => el.dataset.url);
-                 updateGlobalLinkOrder(currentUrls);
-                 links = loadAdminLinks(); // Recarrega a lista salva
-            }
-
-            const newJsonString = JSON.stringify(links);
-            
-            let templateHtml = document.documentElement.outerHTML;
-
-            // Substitui a variável CATEGORIES
-            const categoriesRegex = /(const\s+CATEGORIES\s+=\s+)\[([^\]]+)\]/i;
-            const newCategoriesString = `['${CATEGORIES.join("', '")}']`;
-            templateHtml = templateHtml.replace(categoriesRegex, `$1${newCategoriesString}`);
-
-            // Substitui a variável DEFAULT_LINKS_JSON
-            const linksRegex = /(const\s+DEFAULT_LINKS_JSON\s+=\s+')([^']+?)(';)/;
-            
-            const newHtml = templateHtml.replace(linksRegex, `$1${newJsonString}$3`);
-
-            outputCodeArea.value = newHtml;
-            outputCodeArea.select();
-            
-            try {
-                document.execCommand('copy');
-                generatorBtn.textContent = 'Copiado para a área de transferência! (Substitua no seu host)';
-                setTimeout(() => {
-                    generatorBtn.textContent = 'Gerar Código Final (Copiar e Salvar)';
-                }, 3000);
-            } catch (err) {
-                generatorBtn.textContent = 'Código gerado. Copie o texto da caixa e substitua no seu host!';
-            }
-        }
-        
-
-        // ----------------------------------------
-        // 6. LISTENERS DE EVENTOS (FORMULÁRIOS E ADMIN)
-        // ----------------------------------------
-
         function handleAddLink(event) { 
             event.preventDefault();
             
@@ -1294,7 +1432,6 @@
                     links.push({ url: finalUrl, label: label, category: categorySelected, type: 'admin' });
                     saveAdminLinks(links);
                     
-                    // Se o link for adicionado na categoria ativa, renderiza novamente
                     if (categorySelected === activeCategory) {
                         renderLinks(categorySelected);
                     }
@@ -1306,6 +1443,47 @@
             }
         }
         
+        function generateFinalHtml() { 
+            let links = loadAdminLinks();
+            let categories = loadCategories();
+            
+            // Remove categorias reservadas (como a calculadora) antes de gerar o código-fonte
+            categories = categories.filter(c => c !== 'basic-calc'); 
+            
+            if(isAdmin) {
+                 const currentUrls = Array.from(linksContainer.querySelectorAll('.link-item')).map(el => el.dataset.url);
+                 updateGlobalLinkOrder(currentUrls);
+                 links = loadAdminLinks(); 
+            }
+
+            const newJsonString = JSON.stringify(links);
+            const newCategoriesString = JSON.stringify(categories);
+            
+            let templateHtml = document.documentElement.outerHTML;
+
+            // Substitui a variável DEFAULT_CATEGORIES_JSON
+            const categoriesRegex = /(const\s+DEFAULT_CATEGORIES_JSON\s+=\s+')([^']+?)(';)/;
+            templateHtml = templateHtml.replace(categoriesRegex, `$1${newCategoriesString}$3`);
+
+            // Substitui a variável DEFAULT_LINKS_JSON
+            const linksRegex = /(const\s+DEFAULT_LINKS_JSON\s+=\s+')([^']+?)(';)/;
+            const newHtml = templateHtml.replace(linksRegex, `$1${newJsonString}$3`);
+
+            outputCodeArea.value = newHtml;
+            outputCodeArea.select();
+            
+            try {
+                document.execCommand('copy');
+                generatorBtn.textContent = 'Copiado para a área de transferência! (Substitua no seu host)';
+                setTimeout(() => {
+                    generatorBtn.textContent = 'Gerar Código Final (Copiar e Salvar)';
+                }, 3000);
+            } catch (err) {
+                generatorBtn.textContent = 'Código gerado. Copie o texto da caixa e substitua no seu host!';
+            }
+        }
+        
+
         adminAddForm.addEventListener('submit', handleAddLink);
         generatorBtn.addEventListener('click', generateFinalHtml);
 
@@ -1338,15 +1516,16 @@
             }
         });
 
-        // --- Inicialização ---
+        // --- Inicialização Principal ---
         document.addEventListener('DOMContentLoaded', () => {
             clear(); 
-            initializeCategories();
+            initializeCategorySelect();
             
-            // Define a sub-aba padrão 'Ferramentas' (a categoria interna do sub-tab LINKS)
-            showSubTab('Ferramentas'); 
+            // Define o estado inicial da aba: pega a primeira categoria de links disponível
+            const initialCategory = loadCategories()[0] || 'Ferramentas';
+            activeCategory = initialCategory;
             
-            // Define a aba principal padrão 'links'
+            showSubTab(initialCategory); 
             showMainTab('links'); 
             
             updateAdminMode(false);
